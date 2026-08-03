@@ -1,0 +1,211 @@
+@import url("https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&display=swap");
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Warm cream page background */
+    --background: 30 22% 96%;
+    --foreground: 0 0% 11%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 11%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 11%;
+
+    /* Flame red primary */
+    --primary: 11 76% 49%;
+    --primary-foreground: 0 0% 100%;
+    --primary-deep: 7 84% 40%;
+
+    /* Charcoal secondary */
+    --secondary: 0 0% 11%;
+    --secondary-foreground: 0 0% 100%;
+
+    --muted: 30 15% 94%;
+    --muted-foreground: 0 0% 42%;
+
+    --accent: 24 91% 53%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 7 84% 40%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 30 14% 88%;
+    --input: 30 14% 88%;
+    --ring: 11 76% 49%;
+
+    --radius: 0.5rem;
+
+    /* Sidebar — charcoal dark */
+    --sidebar-background: 0 0% 11%;
+    --sidebar-foreground: 0 0% 60%;
+    --sidebar-primary: 24 91% 53%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 0 0% 16%;
+    --sidebar-accent-foreground: 0 0% 96%;
+    --sidebar-border: 0 0% 16%;
+    --sidebar-ring: 24 91% 53%;
+    --sidebar-active: 22 90% 51%;
+
+    /* Litmus green — supporting only */
+    --litmus-dark: 163 69% 17%;
+    --litmus-teal: 157 60% 26%;
+    --litmus-emerald: 155 52% 37%;
+    --litmus-mint: 140 36% 88%;
+
+    /* Flame palette tokens */
+    --flame-deep: 7 84% 40%;
+    --flame-red: 11 76% 49%;
+    --flame-orange: 22 90% 51%;
+    --flame-amber: 36 91% 57%;
+    --flame-gold: 43 95% 66%;
+
+    /* Flame tints */
+    --flame-red-tint: 24 88% 95%;
+    --flame-orange-tint: 28 82% 96%;
+    --flame-amber-tint: 45 85% 92%;
+
+    /* Status colors — Litmus brand */
+    --status-pending: 11 76% 49%;
+    --status-pending-bg: 24 88% 95%;
+    --status-approved: 163 69% 17%;
+    --status-approved-bg: 140 36% 88%;
+    --status-rejected: 0 55% 41%;
+    --status-rejected-bg: 0 74% 95%;
+    --status-completed: 157 60% 26%;
+    --status-completed-bg: 150 40% 93%;
+    --status-inprogress: 36 91% 57%;
+    --status-inprogress-bg: 45 85% 92%;
+
+    /* Chart colors */
+    --chart-1: 11 76% 49%;
+    --chart-2: 22 90% 51%;
+    --chart-3: 36 91% 57%;
+    --chart-4: 43 95% 66%;
+    --chart-5: 155 52% 37%;
+
+    /* Litmus consumer brand — headline text gradient (vertical) */
+    --brand-text-from: #ff9a3c;
+    --brand-text-to: #f06c00;
+    /* Solid primary — buttons, accents, rings */
+    --brand-primary: #f06c00;
+    /* Teal card band — horizontal gradient + deep accent */
+    --brand-card-from: #004e64;
+    --brand-card-to: #008eb3;
+    --brand-card-deep: #003d52;
+    /* RGB tuples for shadows (space-separated) */
+    --brand-primary-rgb: 240 108 0;
+    --brand-card-rgb: 0 78 100;
+    --brand-action: #0369a1;
+    --brand-action-hover: #075985;
+  }
+
+  .dark {
+    --background: 0 0% 8%;
+    --foreground: 0 0% 96%;
+    --card: 0 0% 12%;
+    --card-foreground: 0 0% 96%;
+    --popover: 0 0% 12%;
+    --popover-foreground: 0 0% 96%;
+    --primary: 11 76% 49%;
+    --primary-foreground: 0 0% 100%;
+    --primary-deep: 7 84% 40%;
+    --secondary: 0 0% 24%;
+    --secondary-foreground: 0 0% 96%;
+    --muted: 0 0% 16%;
+    --muted-foreground: 0 0% 60%;
+    --accent: 22 90% 51%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 62% 30%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 0 0% 20%;
+    --input: 0 0% 20%;
+    --ring: 11 76% 49%;
+    --sidebar-background: 0 0% 8%;
+    --sidebar-foreground: 0 0% 60%;
+    --sidebar-primary: 22 90% 51%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 0 0% 16%;
+    --sidebar-accent-foreground: 0 0% 96%;
+    --sidebar-border: 0 0% 20%;
+    --sidebar-ring: 22 90% 51%;
+    --sidebar-active: 22 90% 51%;
+
+    --brand-text-from: #ff9a3c;
+    --brand-text-to: #f06c00;
+    --brand-primary: #f06c00;
+    --brand-card-from: #004e64;
+    --brand-card-to: #008eb3;
+    --brand-card-deep: #003d52;
+    --brand-primary-rgb: 240 108 0;
+    --brand-card-rgb: 0 78 100;
+    --brand-action: #0369a1;
+    --brand-action-hover: #075985;
+  }
+}
+
+
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+  }
+  /* New requirement: Nunito for all headings */
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-nunito;
+  }
+}
+
+@layer utilities {
+  .font-nunito {
+    font-family: 'Nunito', sans-serif;
+  }
+  /** Orange horizontal gradient for display text */
+  .text-gradient-brand {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-[#D32F2F] to-[#F06C00];
+  }
+  /** Same orange gradient as a fill (top bars, pill backgrounds) */
+  .bg-gradient-brand {
+    background-image: linear-gradient(
+      to bottom,
+      var(--brand-text-from),
+      var(--brand-primary)
+    );
+  }
+  /** Teal horizontal band — test cards, headers */
+  .bg-gradient-card {
+    background-image: linear-gradient(
+      to right,
+      var(--brand-card-from),
+      var(--brand-card-to)
+    );
+  }
+  /** Teal vertical — small badges */
+  .bg-gradient-card-badge {
+    background-image: linear-gradient(
+      to bottom,
+      var(--brand-card-deep),
+      var(--brand-card-to)
+    );
+  }
+  .text-gradient {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-[hsl(var(--flame-amber))] to-[hsl(var(--flame-gold))];
+  }
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* nice button color bg-gradient-to-b from-[#3dd9cf] to-[#20b2aa]  */
