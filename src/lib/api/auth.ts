@@ -23,6 +23,11 @@ export interface ForgotPasswordInput {
   email: string;
 }
 
+export interface VerifyOtpInput {
+  email: string;
+  otp: string;
+}
+
 export interface ResetPasswordInput {
   email: string;
   otp: string;
@@ -52,6 +57,11 @@ export const authApi = {
 
   forgotPassword: async (data: ForgotPasswordInput) => {
     const response = await apiClient.post('/auth/forgot-password', data);
+    return response.data;
+  },
+
+  verifyOtp: async (data: VerifyOtpInput) => {
+    const response = await apiClient.post('/auth/verify-otp', data);
     return response.data;
   },
 

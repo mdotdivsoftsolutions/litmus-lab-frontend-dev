@@ -1,29 +1,78 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Flame, ArrowLeft } from "lucide-react";
+import { Flame, ArrowLeft, CheckCircle2 } from "lucide-react";
+import { useMutation } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { toast } from "sonner";
+import { authApi } from "@/lib/api/auth";
 import loginLabImg from "@/assets/login-lab.jpg";
 
 export default function ForgotPasswordPage() {
+  const [step, setStep] = useState<1 | 2 | 3 | 4>(1); // 1: Email, 2: OTP, 3: Reset, 4: Success
   const [email, setEmail] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [otp, setOtp] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const forgotPasswordMutation = useMutation({
+    mutationFn: authApi.forgotPassword,
+    onSuccess: () => {
+      toast.success("Reset link sent to your email!");
+      setStep(2);
+    },
+    onError: (error: any) => {
+      toast.error(error.response?.data?.message || "Failed to send reset link");
+    },
+  });
+
+  const verifyOtpMutation = useMutation({
+    mutationFn: authApi.verifyOtp,
+    onSuccess: () => {
+      toast.success("OTP verified successfully!");
+      setStep(3);
+    },
+    onError: (error: any) => {
+      toast.error(error.response?.data?.message || "Invalid or expired OTP");
+    },
+  });
+
+  const resetPasswordMutation = useMutation({
+    mutationFn: authApi.resetPassword,
+    onSuccess: () => {
+      toast.success("Password reset successfully!");
+      setStep(4);
+    },
+    onError: (error: any) => {
+      toast.error(error.response?.data?.message || "Failed to reset password");
+    },
+  });
+
+  const handleEmailSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!email) return;
-    
-    setIsSubmitting(true);
-    // Simulate API call
-    setTimeout(() => {
-      setIsSubmitting(false);
-      setIsSubmitted(true);
-      toast.success("Reset link sent to your email!");
-    }, 1500);
+    forgotPasswordMutation.mutate({ email });
+  };
+
+  const handleOtpSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!otp) return;
+    verifyOtpMutation.mutate({ email, otp });
+  };
+
+  const handlePasswordSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (newPassword !== confirmPassword) {
+      toast.error("Passwords do not match");
+      return;
+    }
+    if (newPassword.length < 6) {
+      toast.error("Password must be at least 6 characters");
+      return;
+    }
+    resetPasswordMutation.mutate({ email, otp, newPassword });
   };
 
   return (
@@ -44,7 +93,7 @@ export default function ForgotPasswordPage() {
             <span className="text-primary font-semibold">Laboratory Portal</span>
           </h2>
           <p className="mt-4 text-slate-500 text-sm max-w-sm">
-            Enter your email to receive a password reset link and regain access to the testing and reports dashboard.
+            Enter your email to receive an OTP and set up a new password to regain access to your dashboard.
           </p>
         </div>
 
@@ -60,12 +109,16 @@ export default function ForgotPasswordPage() {
           <CardHeader className="items-center pb-2">
             <h2 className="text-xl font-bold text-foreground">Reset Password</h2>
             <p className="text-sm text-muted-foreground text-center mt-2">
-              We'll send you an email with instructions to reset your password.
+              {step === 1 && "We'll send you an OTP to verify your email address."}
+              {step === 2 && "Enter the 6-digit OTP sent to your email."}
+              {step === 3 && "Create a new strong password."}
+              {step === 4 && "Your password has been successfully updated."}
             </p>
           </CardHeader>
           <CardContent className="space-y-4 pt-4">
-            {!isSubmitted ? (
-              <form onSubmit={handleSubmit} className="space-y-6">
+            
+            {step === 1 && (
+              <form onSubmit={handleEmailSubmit} className="space-y-6">
                 <div className="space-y-2">
                   <Label htmlFor="email" className="text-sm font-medium text-foreground">Email Address</Label>
                   <Input 
@@ -81,38 +134,110 @@ export default function ForgotPasswordPage() {
                 <Button 
                   type="submit"
                   className="w-full bg-primary hover:bg-primary-deep text-primary-foreground shadow-md shadow-primary/20"
-                  disabled={isSubmitting}
+                  disabled={forgotPasswordMutation.isPending}
                 >
-                  {isSubmitting ? "Sending..." : "Send Reset Link"}
+                  {forgotPasswordMutation.isPending ? "Sending..." : "Send OTP"}
                 </Button>
               </form>
-            ) : (
+            )}
+
+            {step === 2 && (
+              <form onSubmit={handleOtpSubmit} className="space-y-6">
+                <div className="space-y-2">
+                  <Label htmlFor="otp" className="text-sm font-medium text-foreground">One-Time Password</Label>
+                  <Input 
+                    id="otp" 
+                    type="text"
+                    maxLength={6}
+                    placeholder="Enter 6-digit OTP" 
+                    value={otp} 
+                    onChange={(e) => setOtp(e.target.value)} 
+                    className="focus:ring-2 focus:ring-primary/15 focus:border-primary bg-background/50 tracking-widest text-center text-lg" 
+                    required
+                  />
+                </div>
+                <Button 
+                  type="submit"
+                  className="w-full bg-primary hover:bg-primary-deep text-primary-foreground shadow-md shadow-primary/20"
+                  disabled={verifyOtpMutation.isPending}
+                >
+                  {verifyOtpMutation.isPending ? "Verifying..." : "Verify OTP"}
+                </Button>
+                <div className="text-center mt-4">
+                  <button
+                    type="button"
+                    onClick={() => forgotPasswordMutation.mutate({ email })}
+                    className="text-xs font-medium text-primary hover:underline"
+                    disabled={forgotPasswordMutation.isPending}
+                  >
+                    Resend OTP
+                  </button>
+                </div>
+              </form>
+            )}
+
+            {step === 3 && (
+              <form onSubmit={handlePasswordSubmit} className="space-y-6">
+                <div className="space-y-2">
+                  <Label htmlFor="newPassword" className="text-sm font-medium text-foreground">New Password</Label>
+                  <Input 
+                    id="newPassword" 
+                    type="password" 
+                    placeholder="••••••••" 
+                    value={newPassword} 
+                    onChange={(e) => setNewPassword(e.target.value)} 
+                    className="focus:ring-2 focus:ring-primary/15 focus:border-primary bg-background/50" 
+                    required
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="confirmPassword" className="text-sm font-medium text-foreground">Confirm Password</Label>
+                  <Input 
+                    id="confirmPassword" 
+                    type="password" 
+                    placeholder="••••••••" 
+                    value={confirmPassword} 
+                    onChange={(e) => setConfirmPassword(e.target.value)} 
+                    className="focus:ring-2 focus:ring-primary/15 focus:border-primary bg-background/50" 
+                    required
+                  />
+                </div>
+                <Button 
+                  type="submit"
+                  className="w-full bg-primary hover:bg-primary-deep text-primary-foreground shadow-md shadow-primary/20"
+                  disabled={resetPasswordMutation.isPending}
+                >
+                  {resetPasswordMutation.isPending ? "Updating..." : "Set New Password"}
+                </Button>
+              </form>
+            )}
+
+            {step === 4 && (
               <div className="py-6 text-center">
                 <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-green-100 mb-4">
-                  <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
-                  </svg>
+                  <CheckCircle2 className="w-6 h-6 text-green-600" />
                 </div>
-                <h3 className="text-lg font-medium text-foreground mb-2">Check your email</h3>
+                <h3 className="text-lg font-medium text-foreground mb-2">Password Reset Complete</h3>
                 <p className="text-sm text-muted-foreground mb-6">
-                  We've sent a password reset link to {email}
+                  You can now log in with your new password.
                 </p>
-                <Button 
-                  onClick={() => { setIsSubmitted(false); setEmail(""); }}
-                  variant="outline"
-                  className="w-full"
-                >
-                  Try another email
-                </Button>
+                <Link to="/laboratory/login">
+                  <Button className="w-full">
+                    Go to Login
+                  </Button>
+                </Link>
               </div>
             )}
             
-            <div className="mt-6 text-center">
-              <Link to="/laboratory/login" className="inline-flex items-center text-sm font-medium text-primary hover:underline">
-                <ArrowLeft className="mr-2 h-4 w-4" />
-                Back to Login
-              </Link>
-            </div>
+            {step !== 4 && (
+              <div className="mt-6 text-center">
+                <Link to="/laboratory/login" className="inline-flex items-center text-sm font-medium text-primary hover:underline">
+                  <ArrowLeft className="mr-2 h-4 w-4" />
+                  Back to Login
+                </Link>
+              </div>
+            )}
+
           </CardContent>
         </Card>
       </div>
