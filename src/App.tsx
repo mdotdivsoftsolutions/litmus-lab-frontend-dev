@@ -7,6 +7,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { PortalLayout } from "@/components/layout/PortalLayout";
 import NotFound from "./pages/NotFound";
 import LoginPage from "./pages/LoginPage";
+import ForgotPasswordPage from "./pages/ForgotPasswordPage";
 import { ProtectedRoute } from "./components/auth/ProtectedRoute";
 import { ErrorBoundary } from "./components/ErrorBoundary";
 
@@ -45,6 +46,7 @@ const App = () => (
           <Routes>
             {/* Public Auth */}
             <Route path="/laboratory/login" element={<LoginPage role="lab" />} />
+            <Route path="/forgot-password" element={<ForgotPasswordPage />} />
             
             {/* Base route redirect */}
             <Route path="/" element={<Navigate to="/lab/dashboard" replace />} />
