@@ -53,7 +53,7 @@ const App = () => (
             <Route path="/" element={<Navigate to="/lab/dashboard" replace />} />
 
             {/* Lab Portal */}
-            <Route path="/lab" element={<ProtectedRoute allowedRoles={["LAB"]} />}>
+            <Route path="/lab" element={<ProtectedRoute allowedRoles={["LAB", "LAB_EMPLOYEE", "LAB_ADMIN"]} />}>
               <Route element={<PortalLayout portal="lab" />}>
                 <Route index element={<Navigate to="dashboard" replace />} />
                 <Route path="dashboard" element={<LabDashboard />} />

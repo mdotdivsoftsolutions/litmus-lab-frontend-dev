@@ -93,7 +93,9 @@ export function SidebarNav({ portal, open, onClose, user }: SidebarNavProps) {
             <Link to="/" className="flex flex-col items-start">
               <img src="/logo.png" alt="Litmus Logo" className="h-8 object-contain" />
               <div className="leading-none mt-1">
-                <span className="block text-[9px] tracking-wider text-slate-500 font-semibold">{subtitleMap[portal]}</span>
+                <span className="block text-[9px] tracking-wider text-slate-500 font-semibold truncate max-w-[160px]">
+                  {portal === "lab" && user?.labId?.labName ? user.labId.labName.toUpperCase() : subtitleMap[portal]}
+                </span>
               </div>
             </Link>
           )}
@@ -145,7 +147,7 @@ export function SidebarNav({ portal, open, onClose, user }: SidebarNavProps) {
                   {user ? [user.firstName, user.lastName].filter(Boolean).join(" ") || "User" : (portal === "user" ? "Rajesh Kumar" : portal === "admin" ? "Admin" : "Chennai Lab")}
                 </p>
                 <p className="text-[10px] text-slate-500 capitalize truncate mt-0.5">
-                  {user ? (user.role || "").toLowerCase() : (portal === "user" ? "Business User" : portal === "admin" ? "Administrator" : "Laboratory")}
+                  {user ? (user.role || "").toLowerCase().replace("_", " ") : (portal === "user" ? "Business User" : portal === "admin" ? "Administrator" : "Laboratory")}
                 </p>
               </div>
             </div>

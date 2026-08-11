@@ -43,7 +43,7 @@ export function LoginSection({ className, showLogo = false, defaultRole }: Login
          toast.error("Not authorized as Admin");
          return;
       }
-      if (role === "lab" && data.data.user.role !== "LAB") {
+      if (role === "lab" && !["LAB", "LAB_EMPLOYEE", "LAB_ADMIN"].includes(data.data.user.role)) {
          toast.error("Not authorized as Lab");
          return;
       }
