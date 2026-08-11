@@ -12,12 +12,8 @@ export default function LoginPage({ role }: LoginPageProps) {
       {/* Left Panel — clean light image panel matching Litmus brand */}
       <div className="hidden lg:flex lg:w-1/2 flex-col relative overflow-hidden bg-white border-r border-slate-100">
         {/* Top branding */}
-        <div className="relative z-10 px-10 pt-8 flex items-center gap-2.5">
-          <Flame className="h-7 w-7 text-primary" />
-          <div>
-            <span className="text-lg font-bold text-secondary tracking-tight">litmus</span>
-            <span className="block text-[9px] tracking-[0.2em] text-primary font-medium -mt-0.5 uppercase">Food Analytics</span>
-          </div>
+        <div className="relative z-10 px-10 pt-8 flex items-center">
+          <img src="/logo.png" alt="Litmus Logo" className="h-10 object-contain" />
         </div>
 
         {/* Headline */}
@@ -41,8 +37,13 @@ export default function LoginPage({ role }: LoginPageProps) {
       </div>
 
       {/* Right Panel — form */}
-      <div className="flex flex-1 items-center justify-center bg-background px-6">
+      <div className="flex flex-1 items-center justify-center bg-background px-6 relative">
         <LoginSection showLogo={!role} defaultRole={role} />
+        
+        {/* Copyright */}
+        <div className="absolute bottom-6 right-6 text-xs text-muted-foreground">
+          © {new Date().getFullYear()} Litmus. All rights reserved.
+        </div>
       </div>
     </div>
   );

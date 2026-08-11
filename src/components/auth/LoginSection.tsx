@@ -69,14 +69,13 @@ export function LoginSection({ className, showLogo = false, defaultRole }: Login
       <CardHeader className="items-center pb-2">
         {showLogo && (
           <Link to="/" className="flex items-center gap-2 mb-6">
-            <Flame className="h-8 w-8 text-primary" />
-            <span className="text-xl font-bold text-foreground tracking-tight">LITMUS</span>
+            <img src="/logo.png" alt="Litmus Logo" className="h-8 object-contain" />
           </Link>
         )}
         <h2 className="text-xl font-bold text-foreground">Welcome back</h2>
         <p className="text-sm text-muted-foreground">Sign in to your account</p>
         {!defaultRole && (
-          <Tabs value={role} onValueChange={setRole} className="w-full mt-4">
+          <Tabs value={role} onValueChange={(value) => setRole(value as "user" | "admin" | "lab")} className="w-full mt-4">
             <TabsList className="w-full bg-muted/50 p-1">
               <TabsTrigger value="user" className="flex-1 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground transition-all">User</TabsTrigger>
               <TabsTrigger value="admin" className="flex-1 data-[state=active]:bg-secondary data-[state=active]:text-secondary-foreground transition-all">Admin</TabsTrigger>
@@ -100,10 +99,7 @@ export function LoginSection({ className, showLogo = false, defaultRole }: Login
             />
           </div>
           <div className="space-y-2">
-            <div className="flex items-center justify-between">
-              <Label htmlFor="password" className="text-sm font-medium text-foreground">Password</Label>
-              <Link to="/forgot-password" className="text-xs text-primary hover:underline font-medium">Forgot Password?</Link>
-            </div>
+            <Label htmlFor="password" className="text-sm font-medium text-foreground">Password</Label>
             <div className="relative">
               <Input 
                 id="password" 
@@ -121,6 +117,9 @@ export function LoginSection({ className, showLogo = false, defaultRole }: Login
               >
                 {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
               </button>
+            </div>
+            <div className="flex justify-end pt-1">
+              <Link to="/forgot-password" className="text-xs text-primary hover:underline font-medium">Forgot Password?</Link>
             </div>
           </div>
           <Button 

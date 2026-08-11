@@ -68,7 +68,7 @@ export function TopNavbar({ onMenuClick, user, onLogoutClick, portal }: TopNavba
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="ghost" size="icon" className="p-0 hover:bg-transparent">
-              <Avatar className="h-8 w-8 ring-2 ring-flame-orange ring-offset-1 ring-offset-card">
+              <Avatar className="h-8 w-8 ring-2 ring-primary ring-offset-1 ring-offset-card">
                 <AvatarFallback className="bg-primary text-primary-foreground text-xs">
                   {user ? `${user.firstName?.[0] || ""}${user.lastName?.[0] || ""}`.toUpperCase() : "U"}
                 </AvatarFallback>

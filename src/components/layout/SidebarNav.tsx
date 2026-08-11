@@ -50,6 +50,7 @@ const labNav = [
   { label: "Tests", icon: TestTubes, href: "/lab/tests" },
   { label: "Packages", icon: Package, href: "/lab/packages" },
   { label: "Schedule", icon: CalendarDays, href: "/lab/schedule" },
+  { label: "Employees", icon: Users, href: "/lab/employees" },
   { label: "Profile", icon: UserCircle, href: "/lab/profile" },
 ];
 
@@ -141,7 +142,7 @@ export function SidebarNav({ portal, open, onClose, user }: SidebarNavProps) {
               </div>
               <div className="leading-none overflow-hidden">
                 <p className="text-xs font-semibold text-slate-900 truncate">
-                  {user ? `${user.firstName} ${user.lastName}` : (portal === "user" ? "Rajesh Kumar" : portal === "admin" ? "Admin" : "Chennai Lab")}
+                  {user ? [user.firstName, user.lastName].filter(Boolean).join(" ") || "User" : (portal === "user" ? "Rajesh Kumar" : portal === "admin" ? "Admin" : "Chennai Lab")}
                 </p>
                 <p className="text-[10px] text-slate-500 capitalize truncate mt-0.5">
                   {user ? (user.role || "").toLowerCase() : (portal === "user" ? "Business User" : portal === "admin" ? "Administrator" : "Laboratory")}

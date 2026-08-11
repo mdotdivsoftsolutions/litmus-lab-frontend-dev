@@ -22,6 +22,7 @@ import LabProfilePage from "./pages/lab/LabProfilePage";
 import LabBookingDetails from "./pages/lab/LabBookingDetails";
 import LabTestFormPage from "./pages/lab/LabTestFormPage";
 import LabPackageFormPage from "./pages/lab/LabPackageFormPage";
+import LabEmployeesPage from "./pages/lab/LabEmployeesPage";
 
 const queryClient = new QueryClient();
 
@@ -67,6 +68,7 @@ const App = () => (
                 <Route path="packages/new" element={<LabPackageFormPage />} />
                 <Route path="packages/edit/:id" element={<LabPackageFormPage />} />
                 <Route path="schedule" element={<LabSchedulePage />} />
+                <Route path="employees" element={<LabEmployeesPage />} />
                 <Route path="profile" element={<LabProfilePage />} />
               </Route>
             </Route>

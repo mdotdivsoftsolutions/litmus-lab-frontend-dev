@@ -504,7 +504,7 @@ export default function LabTestFormPage() {
                 Next Step
               </Button>
             ) : (
-              <Button onClick={handleSave} disabled={saveMutation.isPending} className="w-40 bg-litmus-emerald hover:bg-emerald-600 text-white shadow-md shadow-emerald-500/20">
+              <Button onClick={handleSave} disabled={saveMutation.isPending} className="w-40 bg-primary hover:bg-primary/90 text-primary-foreground shadow-md shadow-primary/20">
                 {saveMutation.isPending ? "Saving..." : (isEditing ? "Save Changes" : "Submit for Approval")}
               </Button>
             )}

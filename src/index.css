@@ -18,9 +18,9 @@
     --popover-foreground: 0 0% 11%;
 
     /* Flame red primary */
-    --primary: 11 76% 49%;
+    --primary: 193 100% 19%;
     --primary-foreground: 0 0% 100%;
-    --primary-deep: 7 84% 40%;
+    --primary-deep: 193 100% 14%;
 
     /* Charcoal secondary */
     --secondary: 0 0% 11%;
@@ -29,28 +29,28 @@
     --muted: 30 15% 94%;
     --muted-foreground: 0 0% 42%;
 
-    --accent: 24 91% 53%;
-    --accent-foreground: 0 0% 100%;
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
 
     --destructive: 7 84% 40%;
     --destructive-foreground: 0 0% 100%;
 
     --border: 30 14% 88%;
     --input: 30 14% 88%;
-    --ring: 11 76% 49%;
+    --ring: 215 20.2% 65.1%;
 
     --radius: 0.5rem;
 
     /* Sidebar — charcoal dark */
     --sidebar-background: 0 0% 11%;
     --sidebar-foreground: 0 0% 60%;
-    --sidebar-primary: 24 91% 53%;
+    --sidebar-primary: 193 100% 19%;
     --sidebar-primary-foreground: 0 0% 100%;
     --sidebar-accent: 0 0% 16%;
     --sidebar-accent-foreground: 0 0% 96%;
     --sidebar-border: 0 0% 16%;
-    --sidebar-ring: 24 91% 53%;
-    --sidebar-active: 22 90% 51%;
+    --sidebar-ring: 193 100% 19%;
+    --sidebar-active: 193 100% 24%;
 
     /* Litmus green — supporting only */
     --litmus-dark: 163 69% 17%;
@@ -90,19 +90,19 @@
     --chart-5: 155 52% 37%;
 
     /* Litmus consumer brand — headline text gradient (vertical) */
-    --brand-text-from: #ff9a3c;
-    --brand-text-to: #f06c00;
+    --brand-text-from: #00a82d;
+    --brand-text-to: #00751F;
     /* Solid primary — buttons, accents, rings */
-    --brand-primary: #f06c00;
+    --brand-primary: #00751F;
     /* Teal card band — horizontal gradient + deep accent */
-    --brand-card-from: #004e64;
-    --brand-card-to: #008eb3;
-    --brand-card-deep: #003d52;
+    --brand-card-from: #004B60;
+    --brand-card-to: #006b88;
+    --brand-card-deep: #002e3b;
     /* RGB tuples for shadows (space-separated) */
-    --brand-primary-rgb: 240 108 0;
-    --brand-card-rgb: 0 78 100;
-    --brand-action: #0369a1;
-    --brand-action-hover: #075985;
+    --brand-primary-rgb: 0 117 31;
+    --brand-card-rgb: 0 75 96;
+    --brand-action: #004B60;
+    --brand-action-hover: #002e3b;
   }
 
   .dark {
@@ -112,9 +112,9 @@
     --card-foreground: 0 0% 96%;
     --popover: 0 0% 12%;
     --popover-foreground: 0 0% 96%;
-    --primary: 11 76% 49%;
+    --primary: 193 100% 19%;
     --primary-foreground: 0 0% 100%;
-    --primary-deep: 7 84% 40%;
+    --primary-deep: 193 100% 14%;
     --secondary: 0 0% 24%;
     --secondary-foreground: 0 0% 96%;
     --muted: 0 0% 16%;
@@ -128,24 +128,24 @@
     --ring: 11 76% 49%;
     --sidebar-background: 0 0% 8%;
     --sidebar-foreground: 0 0% 60%;
-    --sidebar-primary: 22 90% 51%;
+    --sidebar-primary: 193 100% 19%;
     --sidebar-primary-foreground: 0 0% 100%;
     --sidebar-accent: 0 0% 16%;
     --sidebar-accent-foreground: 0 0% 96%;
     --sidebar-border: 0 0% 20%;
-    --sidebar-ring: 22 90% 51%;
-    --sidebar-active: 22 90% 51%;
+    --sidebar-ring: 193 100% 19%;
+    --sidebar-active: 193 100% 24%;
 
-    --brand-text-from: #ff9a3c;
-    --brand-text-to: #f06c00;
-    --brand-primary: #f06c00;
-    --brand-card-from: #004e64;
-    --brand-card-to: #008eb3;
-    --brand-card-deep: #003d52;
-    --brand-primary-rgb: 240 108 0;
-    --brand-card-rgb: 0 78 100;
-    --brand-action: #0369a1;
-    --brand-action-hover: #075985;
+    --brand-text-from: #00a82d;
+    --brand-text-to: #00751F;
+    --brand-primary: #00751F;
+    --brand-card-from: #004B60;
+    --brand-card-to: #006b88;
+    --brand-card-deep: #002e3b;
+    --brand-primary-rgb: 0 117 31;
+    --brand-card-rgb: 0 75 96;
+    --brand-action: #004B60;
+    --brand-action-hover: #002e3b;
   }
 }
 
@@ -168,9 +168,9 @@
   .font-nunito {
     font-family: 'Nunito', sans-serif;
   }
-  /** Orange horizontal gradient for display text */
+  /** Blue horizontal gradient for display text */
   .text-gradient-brand {
-    @apply bg-clip-text text-transparent bg-gradient-to-r from-[#D32F2F] to-[#F06C00];
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-[#006b88] to-[#004B60];
   }
   /** Same orange gradient as a fill (top bars, pill backgrounds) */
   .bg-gradient-brand {
@@ -209,3 +209,21 @@
 }
 
 /* nice button color bg-gradient-to-b from-[#3dd9cf] to-[#20b2aa]  */
+
+@layer base {
+  /* Custom Scrollbar for the entire project */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background-color: hsl(var(--muted-foreground) / 0.3);
+    border-radius: 10px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: hsl(var(--muted-foreground) / 0.5);
+  }
+}

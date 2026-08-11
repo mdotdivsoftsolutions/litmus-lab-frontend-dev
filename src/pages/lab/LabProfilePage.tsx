@@ -91,7 +91,7 @@ export default function LabProfilePage() {
           <h1 className="text-2xl font-bold text-foreground">Lab Profile</h1>
           <p className="text-sm text-muted-foreground">Manage your laboratory's public profile and settings.</p>
         </div>
-        <Button onClick={handleSave} disabled={updateMutation.isPending} className="bg-litmus-emerald hover:bg-emerald-600 text-white shadow-md shadow-emerald-500/20">
+        <Button onClick={handleSave} disabled={updateMutation.isPending} className="bg-primary hover:bg-primary/90 text-primary-foreground shadow-md shadow-primary/20">
           {updateMutation.isPending ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Save className="mr-2 h-4 w-4" />}
           Save Changes
         </Button>
