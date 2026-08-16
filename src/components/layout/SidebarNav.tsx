@@ -9,42 +9,13 @@ import {
 import { Button } from "@/components/ui/button";
 
 interface SidebarNavProps {
-  portal: "user" | "admin" | "lab";
+  portal: "lab";
   open: boolean;
   onClose: () => void;
   user?: any;
 }
 
-const userNav = [
-  { label: "Dashboard", icon: LayoutDashboard, href: "/dashboard" },
-  { label: "Products & Tests", icon: Package, href: "/dashboard/products" },
-  { label: "Laboratories", icon: FlaskConical, href: "/dashboard/laboratories" },
-  { label: "My Bookings", icon: BookOpen, href: "/dashboard/bookings" },
-  { label: "Payments", icon: CreditCard, href: "/dashboard/payments" },
-  { label: "Reports", icon: FileText, href: "/dashboard/reports" },
-  { label: "Documents", icon: FolderOpen, href: "/dashboard/documents" },
-  { label: "Profile", icon: UserCircle, href: "/dashboard/profile" },
-];
-
-const adminNav = [
-  { label: "Dashboard", icon: LayoutDashboard, href: "/admin/dashboard" },
-  { label: "Consultations", icon: FileText, href: "/admin/consultations" },
-  { label: "Users", icon: Users, href: "/admin/users" },
-  { label: "Laboratories", icon: Building2, href: "/admin/laboratories" },
-  { label: "Bookings", icon: ClipboardList, href: "/admin/bookings" },
-  { label: "Categories", icon: Grid3X3, href: "/admin/categories" },
-  { label: "Products", icon: ShoppingBag, href: "/admin/products" },
-  { label: "Tests", icon: TestTubes, href: "/admin/tests" },
-  { label: "Packages", icon: Package, href: "/admin/packages" },
-  { label: "Payments", icon: DollarSign, href: "/admin/payments" },
-  { label: "Reviews", icon: MessageSquareQuote, href: "/admin/reviews" },
-  // { label: "Analytics", icon: BarChart3, href: "/admin/analytics" },
-  { label: "Reports", icon: FileCheck, href: "/admin/reports" },
-  { label: "Settings", icon: Flame, href: "/admin/settings" },
-  { label: "Approvals", icon: CheckSquare, href: "/admin/approvals" },
-];
-
-const labNav = [
+const navItems = [
   { label: "Dashboard", icon: LayoutDashboard, href: "/lab/dashboard" },
   { label: "Bookings", icon: ClipboardList, href: "/lab/bookings" },
   { label: "Tests", icon: TestTubes, href: "/lab/tests" },
@@ -54,16 +25,12 @@ const labNav = [
   { label: "Profile", icon: UserCircle, href: "/lab/profile" },
 ];
 
-const navMap = { user: userNav, admin: adminNav, lab: labNav };
-const subtitleMap = { user: "FOOD TESTING", admin: "ADMIN PANEL", lab: "LAB PORTAL" };
-
 export function SidebarNav({ portal, open, onClose, user }: SidebarNavProps) {
   const location = useLocation();
-  const navItems = navMap[portal];
   const [collapsed, setCollapsed] = useState(false);
 
   const getInitials = () => {
-    if (!user) return portal === "user" ? "RK" : portal === "admin" ? "A" : "CL";
+    if (!user) return "CL";
     return `${user.firstName?.[0] || ""}${user.lastName?.[0] || ""}`.toUpperCase() || "U";
   };
 
@@ -94,7 +61,7 @@ export function SidebarNav({ portal, open, onClose, user }: SidebarNavProps) {
               <img src="/logo.png" alt="Litmus Logo" className="h-8 object-contain" />
               <div className="leading-none mt-1">
                 <span className="block text-[9px] tracking-wider text-slate-500 font-semibold truncate max-w-[160px]">
-                  {portal === "lab" && user?.labId?.labName ? user.labId.labName.toUpperCase() : subtitleMap[portal]}
+                  {user?.labId?.labName ? user.labId.labName.toUpperCase() : "LAB PORTAL"}
                 </span>
               </div>
             </Link>
@@ -144,10 +111,10 @@ export function SidebarNav({ portal, open, onClose, user }: SidebarNavProps) {
               </div>
               <div className="leading-none overflow-hidden">
                 <p className="text-xs font-semibold text-slate-900 truncate">
-                  {user ? [user.firstName, user.lastName].filter(Boolean).join(" ") || "User" : (portal === "user" ? "Rajesh Kumar" : portal === "admin" ? "Admin" : "Chennai Lab")}
+                  {user ? [user.firstName, user.lastName].filter(Boolean).join(" ") || "User" : "Chennai Lab"}
                 </p>
                 <p className="text-[10px] text-slate-500 capitalize truncate mt-0.5">
-                  {user ? (user.role || "").toLowerCase().replace("_", " ") : (portal === "user" ? "Business User" : portal === "admin" ? "Administrator" : "Laboratory")}
+                  {user ? (user.role || "").toLowerCase().replace("_", " ") : "Laboratory"}
                 </p>
               </div>
             </div>
