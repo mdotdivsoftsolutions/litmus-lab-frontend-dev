@@ -16,9 +16,11 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { labApi } from "@/lib/api/lab";
 import { toast } from "sonner";
 import { format } from "date-fns";
+import { InvoiceModal } from "@/components/InvoiceModal";
 
 export default function LabBookings() {
   const [selectedBooking, setSelectedBooking] = useState<any | null>(null);
+  const [invoiceBookingId, setInvoiceBookingId] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState("all");
   const [selectedStatus, setSelectedStatus] = useState<string>("");
   const [collectionStatus, setCollectionStatus] = useState<string>("");
@@ -148,8 +150,8 @@ export default function LabBookings() {
                     <TableCell className="text-sm text-muted-foreground">{format(new Date(b.createdAt), 'MMM dd, yyyy')}</TableCell>
                     <TableCell><StatusBadge status={b.status} /></TableCell>
                     <TableCell>
-                      <div className="flex gap-1">
-                        <Button variant="ghost" size="sm" className="gap-1" onClick={() => {
+                      <div className="flex items-center gap-1">
+                        <Button variant="ghost" size="sm" className="gap-1 h-8 px-2 text-xs" onClick={() => {
                           setSelectedBooking(b);
                           setSelectedStatus(b.status);
                           setCollectionStatus(b.collectionStatus || "PENDING");
@@ -159,7 +161,15 @@ export default function LabBookings() {
                         }}>
                           <Eye className="h-3.5 w-3.5" />View
                         </Button>
-                        <Button variant="ghost" size="sm" className="gap-1" asChild>
+                        <Button 
+                          variant="outline" 
+                          size="sm" 
+                          className="gap-1 h-8 px-2 text-xs border-emerald-200 text-emerald-700 hover:bg-emerald-50 bg-white"
+                          onClick={() => setInvoiceBookingId(b._id)}
+                        >
+                          <FileText className="h-3.5 w-3.5 text-emerald-600" /> Invoice
+                        </Button>
+                        <Button variant="ghost" size="sm" className="gap-1 h-8 px-2 text-xs" asChild>
                           <Link to={`/lab/bookings/${b._id}/upload`}><Upload className="h-3.5 w-3.5" />Upload</Link>
                         </Button>
                       </div>
@@ -383,12 +393,12 @@ export default function LabBookings() {
                   </Button>
                 </div>
 
-                <div className="flex gap-2">
-                  <Button className="w-full gap-2" variant="outline" asChild>
-                    <Link to={`/lab/bookings/${selectedBooking._id}`}><Eye className="h-4 w-4" />Detailed View</Link>
-                  </Button>
-                  <Button className="w-full gap-2" variant="outline" asChild>
-                    <Link to={`/lab/bookings/${selectedBooking._id}/upload`}><Upload className="h-4 w-4" />Upload Results</Link>
+                <div className="border-t border-border pt-4">
+                  <Button 
+                    className="w-full gap-2 bg-emerald-700 hover:bg-emerald-800 text-white font-semibold shadow-xs" 
+                    onClick={() => setInvoiceBookingId(selectedBooking._id)}
+                  >
+                    <FileText className="h-4 w-4" /> View & Print Billing / Tax Invoice
                   </Button>
                 </div>
               </div>
@@ -396,6 +406,13 @@ export default function LabBookings() {
           )}
         </SheetContent>
       </Sheet>
+
+      {/* GST Tax Invoice Modal */}
+      <InvoiceModal
+        bookingId={invoiceBookingId}
+        open={!!invoiceBookingId}
+        onOpenChange={(open) => !open && setInvoiceBookingId(null)}
+      />
     </div>
   );
 }

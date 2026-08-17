@@ -18,9 +18,12 @@ import { Badge } from "@/components/ui/badge";
 import { labApi } from "@/lib/api/lab";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { Skeleton } from "@/components/ui/skeleton";
+import { InvoiceModal } from "@/components/InvoiceModal";
+import { useState } from "react";
 
 export default function LabBookingDetails() {
   const { id } = useParams();
+  const [isInvoiceOpen, setIsInvoiceOpen] = useState(false);
 
   const { data: response, isLoading } = useQuery({
     queryKey: ["labBookings"],
@@ -189,6 +192,13 @@ export default function LabBookingDetails() {
           </div>
         </div>
         <div className="flex gap-3">
+          <Button 
+            variant="outline" 
+            className="gap-2 border-emerald-200 text-emerald-800 hover:bg-emerald-50 bg-white"
+            onClick={() => setIsInvoiceOpen(true)}
+          >
+            <FileText className="h-4 w-4 text-emerald-600" /> Billing / Tax Invoice
+          </Button>
           <Button variant="outline" className="gap-2" asChild>
             <Link to={`/lab/bookings/${booking._id}/upload`}><UploadIcon className="h-4 w-4" />Upload Results</Link>
           </Button>
@@ -398,6 +408,13 @@ export default function LabBookingDetails() {
         )}
 
       </div>
+
+      {/* GST Tax Invoice & Billing Slip Modal */}
+      <InvoiceModal
+        bookingId={booking._id}
+        open={isInvoiceOpen}
+        onOpenChange={setIsInvoiceOpen}
+      />
     </div>
   );
 }

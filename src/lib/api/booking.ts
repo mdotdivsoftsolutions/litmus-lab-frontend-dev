@@ -14,5 +14,10 @@ export const bookingApi = {
   getBookingById: async (id: string) => {
     const response = await apiClient.get(`/booking/${id}`);
     return response.data;
+  },
+
+  getBookingInvoice: async (bookingId: string) => {
+    const response = await apiClient.get(`/booking/${bookingId}/invoice`);
+    return response.data;
   }
 };
