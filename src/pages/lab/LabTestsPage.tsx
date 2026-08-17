@@ -4,7 +4,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { AlertCircle, Info, Edit, Plus } from "lucide-react";
+import { AlertCircle, Info, Edit, Plus, Beaker } from "lucide-react";
 import { labApi } from "@/lib/api/lab";
 import { Skeleton } from "@/components/ui/skeleton";
 
@@ -28,11 +28,14 @@ export default function LabTestsPage() {
 
   return (
     <div className="space-y-6 animate-fade-in pb-20">
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-foreground">My Tests</h1>
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-bold text-foreground">My Laboratory Tests</h1>
+          <p className="text-sm text-muted-foreground mt-1">Manage standard and custom test protocols offered by your facility</p>
+        </div>
         <Button asChild>
           <Link to="/lab/tests/new">
-            <Plus className="mr-2 h-4 w-4" /> Add New Test
+            <Plus className="h-4 w-4 mr-2" /> Add Test Protocol
           </Link>
         </Button>
       </div>
@@ -73,8 +76,23 @@ export default function LabTestsPage() {
                 </TableRow>
               ) : tests.map((t: any) => (
                 <TableRow key={t._id}>
-                  <TableCell className="font-medium max-w-[200px] truncate" title={t.testName}>
-                    {t.testName}
+                  <TableCell>
+                    <div className="flex items-center gap-3">
+                      {t.imageUrl || t.icon ? (
+                        <img
+                          src={t.imageUrl || t.icon}
+                          alt={t.testName}
+                          className="h-10 w-10 rounded-lg object-cover border border-slate-200 shrink-0 bg-slate-50"
+                        />
+                      ) : (
+                        <div className="h-10 w-10 rounded-lg bg-emerald-50 text-emerald-700 flex items-center justify-center border border-emerald-100 shrink-0">
+                          <Beaker className="h-5 w-5" />
+                        </div>
+                      )}
+                      <span className="font-medium max-w-[200px] truncate" title={t.testName}>
+                        {t.testName}
+                      </span>
+                    </div>
                   </TableCell>
                   <TableCell>
                     {getStatusBadge(t.approvalStatus)}

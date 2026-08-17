@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -7,11 +7,12 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ArrowLeft, Beaker, FileText, Plus, Trash2, Library, FlaskConical } from "lucide-react";
+import { ArrowLeft, Beaker, FileText, Plus, Trash2, Library, FlaskConical, Upload, ImageIcon, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { testTypeApi } from "@/lib/api/testType";
 import { labApi } from "@/lib/api/lab";
+import { uploadApi } from "@/lib/api/uploadApi";
 
 const stepLabels = ["Basic Details", "Parameters & Pricing"];
 
@@ -20,6 +21,9 @@ export default function LabTestFormPage() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const isEditing = !!id;
+
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [isUploading, setIsUploading] = useState(false);
 
   const [creationMode, setCreationMode] = useState<'UNSELECTED' | 'EXISTING' | 'CUSTOM'>(isEditing ? 'CUSTOM' : 'UNSELECTED');
   const [selectedPlatformTestId, setSelectedPlatformTestId] = useState<string>("");
@@ -30,6 +34,8 @@ export default function LabTestFormPage() {
   const [formData, setFormData] = useState<any>({
     testName: "",
     description: "",
+    imageUrl: "",
+    icon: "",
     price: "",
     offerPrice: "",
     discountType: "NONE",
@@ -118,6 +124,8 @@ export default function LabTestFormPage() {
         setFormData({
           testName: test.testName || "",
           description: test.description || "",
+          imageUrl: test.imageUrl || test.icon || "",
+          icon: test.icon || test.imageUrl || "",
           price: test.price?.toString() || "",
           offerPrice: test.offerPrice?.toString() || "",
           discountType: test.discountType || "NONE",
@@ -132,6 +140,45 @@ export default function LabTestFormPage() {
       }
     }
   }, [isEditing, allLabTestsData, id]);
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+      toast.error("Please select a valid image file");
+      return;
+    }
+
+    try {
+      setIsUploading(true);
+      const res = await uploadApi.uploadFile(file);
+      const url = res.data?.url || res.url || res.data || res;
+      if (url) {
+        setFormData((prev: any) => ({
+          ...prev,
+          imageUrl: url,
+          icon: url,
+        }));
+        toast.success("Test icon uploaded successfully");
+      }
+    } catch (error) {
+      toast.error("Failed to upload test icon");
+    } finally {
+      setIsUploading(false);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
+    }
+  };
+
+  const handleRemoveImage = () => {
+    setFormData((prev: any) => ({
+      ...prev,
+      imageUrl: "",
+      icon: "",
+    }));
+  };
 
   const saveMutation = useMutation({
     mutationFn: (data: any) => isEditing ? labApi.updateMyLabTest(id!, data) : labApi.createMyLabTest(data),
@@ -352,6 +399,78 @@ export default function LabTestFormPage() {
                   <div className="space-y-2">
                     <Label className="text-sm font-medium">Test Name <span className="text-destructive">*</span></Label>
                     <Input name="testName" value={formData.testName} onChange={handleChange} placeholder="e.g. Specialized Chemical Analysis" className="bg-background/50" />
+                  </div>
+
+                  {/* Test Icon / Image Upload */}
+                  <div className="space-y-2">
+                    <Label className="text-sm font-medium">Test Icon / Image</Label>
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 p-4 rounded-lg border border-border bg-background/50">
+                      <div className="relative h-20 w-20 rounded-lg border-2 border-dashed border-border bg-muted/30 flex items-center justify-center overflow-hidden shrink-0 group">
+                        {formData.imageUrl ? (
+                          <>
+                            <img
+                              src={formData.imageUrl}
+                              alt="Test Icon"
+                              className="h-full w-full object-cover"
+                            />
+                            <button
+                              type="button"
+                              onClick={handleRemoveImage}
+                              className="absolute inset-0 bg-black/50 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                              title="Remove icon"
+                            >
+                              <Trash2 className="h-5 w-5 text-rose-300" />
+                            </button>
+                          </>
+                        ) : (
+                          <ImageIcon className="h-8 w-8 text-muted-foreground/40" />
+                        )}
+                      </div>
+
+                      <div className="flex-1 space-y-1.5">
+                        <input
+                          type="file"
+                          ref={fileInputRef}
+                          onChange={handleFileChange}
+                          accept="image/*"
+                          className="hidden"
+                        />
+                        <div className="flex flex-wrap gap-2">
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            onClick={() => fileInputRef.current?.click()}
+                            disabled={isUploading}
+                            className="gap-1.5 text-xs font-semibold"
+                          >
+                            {isUploading ? (
+                              <>
+                                <Loader2 className="h-3.5 w-3.5 animate-spin" /> Uploading...
+                              </>
+                            ) : (
+                              <>
+                                <Upload className="h-3.5 w-3.5" /> Upload Test Icon
+                              </>
+                            )}
+                          </Button>
+                          {formData.imageUrl && (
+                            <Button
+                              type="button"
+                              variant="ghost"
+                              size="sm"
+                              onClick={handleRemoveImage}
+                              className="text-destructive hover:bg-destructive/10 text-xs"
+                            >
+                              Remove
+                            </Button>
+                          )}
+                        </div>
+                        <p className="text-xs text-muted-foreground">
+                          PNG, JPG, WEBP or SVG (recommended square icon).
+                        </p>
+                      </div>
+                    </div>
                   </div>
                   
                   <div className="grid md:grid-cols-2 gap-6">
