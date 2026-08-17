@@ -16,7 +16,7 @@ export const labApi = {
     return response.data;
   },
 
-  submitResult: async (bookingId: string, data: { reportUrl: string }) => {
+  submitResult: async (bookingId: string, data: { reportUrl?: string; reportFiles?: string[]; summary?: string; recommendations?: string; tips?: string; additionalNotes?: string; reportSummary?: any }) => {
     const response = await apiClient.patch(`/labs/booking/${bookingId}/result`, data);
     return response.data;
   },
