@@ -215,51 +215,51 @@ export function InvoiceModal({ bookingId, open, onOpenChange }: InvoiceModalProp
 
               {/* Items Table */}
               <div className="my-4">
-                <table className="w-full text-[12px] border-collapse">
+                <table className="w-full text-[13px] border-collapse">
                   <thead>
                     <tr className="bg-[#007799] text-white text-[12px] font-normal">
-                      <th className="p-1.5 w-6 text-center font-normal">#</th>
-                      <th className="p-1.5 text-left font-normal">Item name</th>
-                      <th className="p-1.5 w-20 text-center font-normal">HSN/ SAC</th>
-                      <th className="p-1.5 w-14 text-center font-normal">Quantity</th>
-                      <th className="p-1.5 w-24 text-right font-normal">Price/ unit</th>
-                      <th className="p-1.5 w-28 text-right font-normal">GST</th>
-                      <th className="p-1.5 w-24 text-right font-normal">Amount</th>
+                      <th className="py-2 px-1.5 w-8 text-center font-normal">#</th>
+                      <th className="py-2 px-1.5 text-left font-normal">Item name</th>
+                      <th className="py-2 px-1.5 w-20 text-center font-normal">HSN/ SAC</th>
+                      <th className="py-2 px-1.5 w-16 text-center font-normal">Quantity</th>
+                      <th className="py-2 px-1.5 w-24 text-right font-normal">Price/ unit</th>
+                      <th className="py-2 px-1.5 w-28 text-right font-normal">GST</th>
+                      <th className="py-2 px-1.5 w-24 text-right font-normal">Amount</th>
                     </tr>
                   </thead>
                   <tbody>
                     {invoice.items.map((item: any) => (
                       <tr key={item.slNo}>
-                        <td className="p-2 text-center align-top text-black">{item.slNo}</td>
-                        <td className="p-2 align-top text-black">
+                        <td className="py-2.5 px-1.5 text-center align-top text-black">{item.slNo}</td>
+                        <td className="py-2.5 px-1.5 align-top text-black">
                           <div className="font-bold">{item.itemName}</div>
                           {item.itemSubtitle && (
                             <div className="text-[12px] mt-0.5">{item.itemSubtitle}</div>
                           )}
                         </td>
-                        <td className="p-2 text-center align-top text-black">{item.sacCode}</td>
-                        <td className="p-2 text-center align-top text-black">{item.quantity}</td>
-                        <td className="p-2 text-right align-top text-black">
+                        <td className="py-2.5 px-1.5 text-center align-top text-black">{item.sacCode}</td>
+                        <td className="py-2.5 px-1.5 text-center align-top text-black">{item.quantity}</td>
+                        <td className="py-2.5 px-1.5 text-right align-top text-black">
                           ₹ {item.pricePerUnit?.toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                         </td>
-                        <td className="p-2 text-right align-top text-black">
+                        <td className="py-2.5 px-1.5 text-right align-top text-black">
                           ₹ {item.gstAmount?.toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ({item.gstRate?.toFixed(1)}%)
                         </td>
-                        <td className="p-2 text-right align-top text-black font-normal">
+                        <td className="py-2.5 px-1.5 text-right align-top text-black font-normal">
                           ₹ {item.totalAmount?.toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                         </td>
                       </tr>
                     ))}
                     <tr className="border-t border-b border-black font-bold text-[13px]">
-                      <td></td>
-                      <td className="p-1.5 text-black">Total</td>
-                      <td></td>
-                      <td></td>
-                      <td></td>
-                      <td className="p-1.5 text-right text-black">
+                      <td className="py-2 px-1.5"></td>
+                      <td className="py-2 px-1.5 text-black font-bold">Total</td>
+                      <td className="py-2 px-1.5"></td>
+                      <td className="py-2 px-1.5"></td>
+                      <td className="py-2 px-1.5"></td>
+                      <td className="py-2 px-1.5 text-right text-black font-bold">
                         ₹ {invoice.totals.totalGstAmount?.toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                       </td>
-                      <td className="p-1.5 text-right text-black">
+                      <td className="py-2 px-1.5 text-right text-black font-bold">
                         ₹ {invoice.totals.grandTotal?.toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                       </td>
                     </tr>
