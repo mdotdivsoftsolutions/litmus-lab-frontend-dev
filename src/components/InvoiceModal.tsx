@@ -45,11 +45,18 @@ export function InvoiceModal({ bookingId, open, onOpenChange }: InvoiceModalProp
       const filename = `Invoice-${safeInvoiceNo}.pdf`;
 
       const opt = {
-        margin: [8, 10, 8, 10],
+        margin: [6, 8, 6, 8],
         filename: filename,
         image: { type: "jpeg", quality: 0.98 },
-        html2canvas: { scale: 2, useCORS: true, logging: false },
+        html2canvas: {
+          scale: 2,
+          useCORS: true,
+          logging: false,
+          scrollY: 0,
+          scrollX: 0,
+        },
         jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
+        pagebreak: { mode: ["avoid-all", "css", "legacy"] },
       };
 
       await (window as any).html2pdf().set(opt).from(printRef.current).save();
