@@ -13,7 +13,7 @@ export default function LoginPage({ role }: LoginPageProps) {
       <div className="hidden lg:flex lg:w-1/2 flex-col relative overflow-hidden bg-white border-r border-slate-100">
         {/* Top branding */}
         <div className="relative z-10 px-10 pt-8 flex items-center">
-          <img src="/logo.png" alt="Litmus Logo" className="h-10 object-contain" />
+          <img src="/logo.webp" alt="Litmus Logo" className="h-9 w-auto object-contain" />
         </div>
 
         {/* Headline */}

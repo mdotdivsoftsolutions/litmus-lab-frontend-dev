@@ -10,7 +10,8 @@ import {
   Phone, 
   User, 
   FileText, 
-  Loader2 
+  Loader2,
+  Truck
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -254,36 +255,80 @@ export default function LabBookingDetails() {
             </CardContent>
           </Card>
 
-          {/* Sample Collection / Tracking */}
-          <Card className="print-border shadow-sm">
-            <CardHeader className="pb-3 border-b border-border print-bg">
-              <CardTitle className="text-base flex items-center gap-2"><MapPin className="h-4 w-4" /> Sample Collection Details</CardTitle>
-            </CardHeader>
-            <CardContent className="pt-4 space-y-3 text-sm">
-              <div className="grid grid-cols-3 gap-2">
-                <span className="text-muted-foreground">Status:</span>
-                <Badge variant="outline" className="w-fit">{booking.collectionStatus || "Pending"}</Badge>
-              </div>
-              <div className="grid grid-cols-3 gap-2">
-                <span className="text-muted-foreground">Pref. Date:</span>
-                <span className="col-span-2 font-medium">
-                  {booking.metadata?.collectionDetails?.pickupDate 
-                    ? format(new Date(booking.metadata?.collectionDetails?.pickupDate), "MMM d, yyyy") 
-                    : "Not specified"}
-                </span>
-              </div>
-              <div className="grid grid-cols-3 gap-2">
-                <span className="text-muted-foreground">Pref. Time:</span>
-                <span className="col-span-2 font-medium">{booking.metadata?.collectionDetails?.pickupTime || "Not specified"}</span>
-              </div>
-              {booking.assignedCollector?.name && (
-                <div className="grid grid-cols-3 gap-2 pt-2 border-t border-slate-100">
-                  <span className="text-muted-foreground">Agent:</span>
-                  <span className="col-span-2 font-medium">{booking.assignedCollector.name} ({booking.assignedCollector.contact})</span>
-                </div>
-              )}
-            </CardContent>
-          </Card>
+          {/* Sample Collection / Courier Logistics Card */}
+          {(() => {
+            const isCourierMethod = 
+              booking.collectionMethod === 'COURIER' ||
+              booking.metadata?.collectionMethod === 'COURIER' ||
+              booking.metadata?.collectionDetails?.collectionMethod === 'COURIER';
+            const courierInfo = booking.courierDetails || booking.metadata?.courierDetails || {};
+
+            return isCourierMethod ? (
+              <Card className="print-border shadow-sm">
+                <CardHeader className="pb-3 border-b border-border print-bg">
+                  <CardTitle className="text-base flex items-center gap-2"><Truck className="h-4 w-4 text-blue-600" /> Sample Courier Dispatch</CardTitle>
+                </CardHeader>
+                <CardContent className="pt-4 space-y-3 text-sm">
+                  <div className="grid grid-cols-3 gap-2">
+                    <span className="text-muted-foreground">Receipt Status:</span>
+                    <Badge variant="outline" className="w-fit">{booking.collectionStatus || "Pending"}</Badge>
+                  </div>
+                  <div className="grid grid-cols-3 gap-2">
+                    <span className="text-muted-foreground">AWB / Track ID:</span>
+                    <span className="col-span-2 font-mono font-bold text-slate-900 break-all">
+                      {courierInfo.trackingId || "Not updated by customer"}
+                    </span>
+                  </div>
+                  <div className="grid grid-cols-3 gap-2">
+                    <span className="text-muted-foreground">Courier Partner:</span>
+                    <span className="col-span-2 font-medium">{courierInfo.courierName || "Unspecified"}</span>
+                  </div>
+                  {courierInfo.submittedAt && (
+                    <div className="grid grid-cols-3 gap-2">
+                      <span className="text-muted-foreground">Dispatched On:</span>
+                      <span className="col-span-2 font-medium">{format(new Date(courierInfo.submittedAt), "MMM d, yyyy · hh:mm a")}</span>
+                    </div>
+                  )}
+                  {courierInfo.notes && (
+                    <div className="pt-2 border-t border-slate-100 text-xs">
+                      <span className="text-muted-foreground block mb-0.5">Dispatch Notes:</span>
+                      <p className="italic text-slate-700 font-medium">"{courierInfo.notes}"</p>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            ) : (
+              <Card className="print-border shadow-sm">
+                <CardHeader className="pb-3 border-b border-border print-bg">
+                  <CardTitle className="text-base flex items-center gap-2"><MapPin className="h-4 w-4 text-amber-600" /> Sample Collection Details</CardTitle>
+                </CardHeader>
+                <CardContent className="pt-4 space-y-3 text-sm">
+                  <div className="grid grid-cols-3 gap-2">
+                    <span className="text-muted-foreground">Status:</span>
+                    <Badge variant="outline" className="w-fit">{booking.collectionStatus || "Pending"}</Badge>
+                  </div>
+                  <div className="grid grid-cols-3 gap-2">
+                    <span className="text-muted-foreground">Pref. Date:</span>
+                    <span className="col-span-2 font-medium">
+                      {booking.metadata?.collectionDetails?.pickupDate 
+                        ? format(new Date(booking.metadata?.collectionDetails?.pickupDate), "MMM d, yyyy") 
+                        : "Not specified"}
+                    </span>
+                  </div>
+                  <div className="grid grid-cols-3 gap-2">
+                    <span className="text-muted-foreground">Pref. Time:</span>
+                    <span className="col-span-2 font-medium">{booking.metadata?.collectionDetails?.pickupTime || "Not specified"}</span>
+                  </div>
+                  {booking.assignedCollector?.name && (
+                    <div className="grid grid-cols-3 gap-2 pt-2 border-t border-slate-100">
+                      <span className="text-muted-foreground">Agent:</span>
+                      <span className="col-span-2 font-medium">{booking.assignedCollector.name} ({booking.assignedCollector.contact})</span>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            );
+          })()}
         </div>
 
         {/* Tests & Samples Detail Section */}

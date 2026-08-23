@@ -10,7 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
-import { Eye, Upload, Loader2, Beaker, Search, FileText } from "lucide-react";
+import { Eye, Upload, Loader2, Beaker, Search, FileText, Truck, Copy, MapPin } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Checkbox } from "@/components/ui/checkbox";
 import { labApi } from "@/lib/api/lab";
@@ -230,74 +230,168 @@ export default function LabBookings() {
                   </div>
                 </div>
 
-                {/* Sample Collection Arrangement */}
-                <div className="border-t border-border pt-4 mt-6">
-                  <h4 className="text-sm font-semibold mb-3">Sample Collection Arrangement</h4>
-                  
-                  <div className="grid grid-cols-2 gap-3 mb-4 text-sm">
-                    <div className="rounded-lg bg-muted/20 border border-border p-3">
-                      <p className="text-muted-foreground text-xs">Preferred Date</p>
-                      <p className="font-medium">{selectedBooking.metadata?.collectionDetails?.pickupDate ? format(new Date(selectedBooking.metadata?.collectionDetails?.pickupDate), "MMM d, yyyy") : "Not specified"}</p>
-                    </div>
-                    <div className="rounded-lg bg-muted/20 border border-border p-3">
-                      <p className="text-muted-foreground text-xs">Preferred Time</p>
-                      <p className="font-medium">{selectedBooking.metadata?.collectionDetails?.pickupTime || "Not specified"}</p>
-                    </div>
-                  </div>
+                {/* Sample Logistics / Dispatch Section */}
+                {(() => {
+                  const isCourierMethod = 
+                    selectedBooking.collectionMethod === 'COURIER' ||
+                    selectedBooking.metadata?.collectionMethod === 'COURIER' ||
+                    selectedBooking.metadata?.collectionDetails?.collectionMethod === 'COURIER';
+                  const courierInfo = selectedBooking.courierDetails || selectedBooking.metadata?.courierDetails || {};
 
-                  <div className="space-y-3 bg-muted/10 p-3 rounded-lg border border-border">
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                      <div className="space-y-1.5">
-                        <label className="text-xs font-medium text-muted-foreground">Collection Status</label>
-                        <Select value={collectionStatus} onValueChange={setCollectionStatus}>
-                          <SelectTrigger className="h-9">
-                            <SelectValue placeholder="Status" />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="NOT_REQUIRED">Not Required</SelectItem>
-                            <SelectItem value="PENDING">Pending</SelectItem>
-                            <SelectItem value="ASSIGNED">Assigned</SelectItem>
-                            <SelectItem value="REACHED">Reached</SelectItem>
-                            <SelectItem value="COLLECTED">Collected</SelectItem>
-                          </SelectContent>
-                        </Select>
+                  return isCourierMethod ? (
+                    <div className="border-t border-border pt-4 mt-6">
+                      <div className="flex items-center gap-2 mb-3">
+                        <Truck className="h-4 w-4 text-blue-600" />
+                        <div>
+                          <h4 className="text-sm font-semibold">Sample Courier Dispatch</h4>
+                          <p className="text-xs text-muted-foreground">Customer self-shipment tracking & lab receipt</p>
+                        </div>
                       </div>
-                      <div className="space-y-1.5">
-                        <label className="text-xs font-medium text-muted-foreground">Collector Name</label>
-                        <Input 
-                          placeholder="Name" 
-                          value={collectorName}
-                          onChange={(e) => setCollectorName(e.target.value)}
-                          className="h-9 text-sm"
-                        />
+
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-4 text-sm bg-blue-50/50 border border-blue-100 p-3.5 rounded-lg">
+                        <div>
+                          <p className="text-blue-800 text-[10px] font-bold uppercase tracking-wider mb-1">Tracking / AWB No.</p>
+                          {courierInfo.trackingId ? (
+                            <div className="flex items-center gap-1.5 font-mono font-bold text-slate-900 text-xs break-all">
+                              <span>{courierInfo.trackingId}</span>
+                              <Button 
+                                variant="ghost" 
+                                size="icon" 
+                                className="h-5 w-5 text-blue-600 hover:text-blue-900" 
+                                onClick={() => {
+                                  navigator.clipboard.writeText(courierInfo.trackingId);
+                                  toast.success("Tracking ID copied");
+                                }}
+                              >
+                                <Copy className="h-3 w-3" />
+                              </Button>
+                            </div>
+                          ) : (
+                            <span className="text-xs text-amber-700 italic font-medium">Not updated yet by customer</span>
+                          )}
+                        </div>
+                        <div>
+                          <p className="text-blue-800 text-[10px] font-bold uppercase tracking-wider mb-1">Courier Partner</p>
+                          <p className="font-semibold text-xs text-blue-950">{courierInfo.courierName || "Unspecified"}</p>
+                        </div>
+                        <div>
+                          <p className="text-blue-800 text-[10px] font-bold uppercase tracking-wider mb-1">Dispatched On</p>
+                          <p className="font-semibold text-xs text-blue-950">
+                            {courierInfo.submittedAt ? format(new Date(courierInfo.submittedAt), "MMM d, yyyy · hh:mm a") : "Pending dispatch"}
+                          </p>
+                        </div>
                       </div>
-                      <div className="space-y-1.5">
-                        <label className="text-xs font-medium text-muted-foreground">Contact</label>
-                        <Input 
-                          placeholder="Phone number" 
-                          value={collectorContact}
-                          onChange={(e) => setCollectorContact(e.target.value)}
-                          className="h-9 text-sm"
-                        />
+
+                      {courierInfo.notes && (
+                        <div className="mb-4 p-3 bg-slate-50 rounded-lg border border-slate-200 text-xs">
+                          <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block mb-0.5">Customer Dispatch Notes</span>
+                          <p className="text-slate-800 italic">"{courierInfo.notes}"</p>
+                        </div>
+                      )}
+
+                      <div className="space-y-3 bg-muted/10 p-3.5 rounded-lg border border-border">
+                        <div className="space-y-1.5">
+                          <label className="text-xs font-semibold text-slate-700">Sample Receipt at Lab</label>
+                          <Select value={collectionStatus} onValueChange={setCollectionStatus}>
+                            <SelectTrigger className="h-9 bg-white text-xs">
+                              <SelectValue placeholder="Receipt Status" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="PENDING">PENDING (Awaiting Dispatch)</SelectItem>
+                              <SelectItem value="SHIPPED">SHIPPED (In Transit)</SelectItem>
+                              <SelectItem value="COLLECTED">COLLECTED / RECEIVED AT LAB</SelectItem>
+                              <SelectItem value="NOT_REQUIRED">NOT REQUIRED</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
+
+                        <Button 
+                          size="sm"
+                          className="w-full bg-slate-900 hover:bg-slate-800 text-white mt-1 text-xs font-semibold" 
+                          onClick={handleUpdateCollection}
+                          disabled={updateCollectionMutation.isPending}
+                        >
+                          {updateCollectionMutation.isPending ? <Loader2 className="mr-2 h-3.5 w-3.5 animate-spin" /> : null}
+                          Update Sample Receipt Status
+                        </Button>
                       </div>
                     </div>
-                    <div className="flex items-center space-x-2 pb-1">
-                      <Checkbox id="notifyDelayLab" checked={notifyDelay} onCheckedChange={(c) => setNotifyDelay(!!c)} />
-                      <label htmlFor="notifyDelayLab" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
-                        Notify user of delay via email
-                      </label>
+                  ) : (
+                    <div className="border-t border-border pt-4 mt-6">
+                      <div className="flex items-center gap-2 mb-3">
+                        <MapPin className="h-4 w-4 text-amber-600" />
+                        <div>
+                          <h4 className="text-sm font-semibold">Sample Doorstep Collection</h4>
+                          <p className="text-xs text-muted-foreground">Doorstep collection schedule & assigned agent</p>
+                        </div>
+                      </div>
+                      
+                      <div className="grid grid-cols-2 gap-3 mb-4 text-sm">
+                        <div className="rounded-lg bg-amber-50/40 border border-amber-100 p-3">
+                          <p className="text-amber-800 text-xs font-semibold">Preferred Date</p>
+                          <p className="font-bold text-amber-950">{selectedBooking.metadata?.collectionDetails?.pickupDate ? format(new Date(selectedBooking.metadata?.collectionDetails?.pickupDate), "MMM d, yyyy") : "Not specified"}</p>
+                        </div>
+                        <div className="rounded-lg bg-amber-50/40 border border-amber-100 p-3">
+                          <p className="text-amber-800 text-xs font-semibold">Preferred Time</p>
+                          <p className="font-bold text-amber-950">{selectedBooking.metadata?.collectionDetails?.pickupTime || "Not specified"}</p>
+                        </div>
+                      </div>
+
+                      <div className="space-y-3 bg-muted/10 p-3.5 rounded-lg border border-border">
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                          <div className="space-y-1.5">
+                            <label className="text-xs font-medium text-muted-foreground">Collection Status</label>
+                            <Select value={collectionStatus} onValueChange={setCollectionStatus}>
+                              <SelectTrigger className="h-9 bg-white text-xs">
+                                <SelectValue placeholder="Status" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="NOT_REQUIRED">Not Required</SelectItem>
+                                <SelectItem value="PENDING">Pending</SelectItem>
+                                <SelectItem value="ASSIGNED">Assigned</SelectItem>
+                                <SelectItem value="REACHED">Reached</SelectItem>
+                                <SelectItem value="COLLECTED">Collected</SelectItem>
+                              </SelectContent>
+                            </SelectContent>
+                          </div>
+                          <div className="space-y-1.5">
+                            <label className="text-xs font-medium text-muted-foreground">Collector Name</label>
+                            <Input 
+                              placeholder="Name" 
+                              value={collectorName}
+                              onChange={(e) => setCollectorName(e.target.value)}
+                              className="h-9 text-xs bg-white"
+                            />
+                          </div>
+                          <div className="space-y-1.5">
+                            <label className="text-xs font-medium text-muted-foreground">Contact</label>
+                            <Input 
+                              placeholder="Phone number" 
+                              value={collectorContact}
+                              onChange={(e) => setCollectorContact(e.target.value)}
+                              className="h-9 text-xs bg-white font-mono"
+                            />
+                          </div>
+                        </div>
+                        <div className="flex items-center space-x-2 pb-1">
+                          <Checkbox id="notifyDelayLab" checked={notifyDelay} onCheckedChange={(c) => setNotifyDelay(!!c)} />
+                          <label htmlFor="notifyDelayLab" className="text-xs font-medium text-muted-foreground cursor-pointer leading-none">
+                            Notify user of delay via email
+                          </label>
+                        </div>
+                        <Button 
+                          size="sm"
+                          className="w-full bg-slate-900 hover:bg-slate-800 text-white mt-1 text-xs font-semibold" 
+                          onClick={handleUpdateCollection}
+                          disabled={updateCollectionMutation.isPending}
+                        >
+                          {updateCollectionMutation.isPending ? <Loader2 className="mr-2 h-3.5 w-3.5 animate-spin" /> : null}
+                          Save Collection Details
+                        </Button>
+                      </div>
                     </div>
-                    <Button 
-                      size="sm"
-                      className="w-full bg-slate-900 hover:bg-slate-800 text-white mt-1" 
-                      onClick={handleUpdateCollection}
-                      disabled={updateCollectionMutation.isPending}
-                    >
-                      {updateCollectionMutation.isPending ? <Loader2 className="mr-2 h-3.5 w-3.5 animate-spin" /> : null}
-                      Save Collection Details
-                    </Button>
-                  </div>
-                </div>
+                  );
+                })()}
 
                 {/* Items/Sample Details */}
                 <div className="border-t border-border pt-4 mt-6">

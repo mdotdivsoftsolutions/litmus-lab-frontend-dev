@@ -58,7 +58,7 @@ export function SidebarNav({ portal, open, onClose, user }: SidebarNavProps) {
         <div className="flex h-14 shrink-0 items-center justify-between border-b border-slate-200 px-3">
           {!collapsed && (
             <Link to="/" className="flex flex-col items-start">
-              <img src="/logo.png" alt="Litmus Logo" className="h-8 object-contain" />
+              <img src="/logo.webp" alt="Litmus Logo" className="h-7 w-auto object-contain" />
               <div className="leading-none mt-1">
                 <span className="block text-[9px] tracking-wider text-slate-500 font-semibold truncate max-w-[160px]">
                   {user?.labId?.labName ? user.labId.labName.toUpperCase() : "LAB PORTAL"}
@@ -68,7 +68,7 @@ export function SidebarNav({ portal, open, onClose, user }: SidebarNavProps) {
           )}
           {collapsed && (
             <Link to="/" className="mx-auto">
-              <img src="/logo.png" alt="Litmus Logo" className="h-6 object-contain" />
+              <img src="/logo.webp" alt="Litmus Logo" className="h-5 w-auto object-contain" />
             </Link>
           )}
           <Button variant="ghost" size="icon" className="text-slate-500 lg:hidden h-7 w-7" onClick={onClose}>
