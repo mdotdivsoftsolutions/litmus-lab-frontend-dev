@@ -352,7 +352,7 @@ export default function LabBookings() {
                                 <SelectItem value="REACHED">Reached</SelectItem>
                                 <SelectItem value="COLLECTED">Collected</SelectItem>
                               </SelectContent>
-                            </SelectContent>
+                            </Select>
                           </div>
                           <div className="space-y-1.5">
                             <label className="text-xs font-medium text-muted-foreground">Collector Name</label>

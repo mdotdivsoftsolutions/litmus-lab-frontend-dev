@@ -47,6 +47,8 @@ const App = () => (
           <Routes>
             {/* Public Auth */}
             <Route path="/laboratory/login" element={<LoginPage role="lab" />} />
+            <Route path="/lab/login" element={<LoginPage role="lab" />} />
+            <Route path="/login" element={<LoginPage role="lab" />} />
             <Route path="/forgot-password" element={<ForgotPasswordPage />} />
             
             {/* Base route redirect */}
