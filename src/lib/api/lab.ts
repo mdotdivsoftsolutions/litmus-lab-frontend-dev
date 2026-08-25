@@ -26,6 +26,11 @@ export const labApi = {
     return response.data;
   },
 
+  getDashboardStats: async () => {
+    const response = await apiClient.get('/lab-portal/stats');
+    return response.data;
+  },
+
   updateMyLabProfile: async (data: any) => {
     const response = await apiClient.patch('/lab-portal/profile', data);
     return response.data;

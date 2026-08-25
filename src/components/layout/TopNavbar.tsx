@@ -1,8 +1,7 @@
 import { Link, useLocation } from "react-router-dom";
-import { Bell, ChevronRight, Menu, LogOut, User, Settings } from "lucide-react";
+import { Bell, ChevronRight, Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { notifications } from "@/lib/placeholder-data";
 
 interface TopNavbarProps {
@@ -61,26 +60,6 @@ export function TopNavbar({ onMenuClick, user, onLogoutClick, portal }: TopNavba
                 <span className="text-xs text-muted-foreground">{n.time}</span>
               </DropdownMenuItem>
             ))}
-          </DropdownMenuContent>
-        </DropdownMenu>
-
-        {/* User avatar dropdown */}
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="icon" className="p-0 hover:bg-transparent">
-              <Avatar className="h-8 w-8 ring-2 ring-primary ring-offset-1 ring-offset-card">
-                <AvatarFallback className="bg-primary text-primary-foreground text-xs">
-                  {user ? `${user.firstName?.[0] || ""}${user.lastName?.[0] || ""}`.toUpperCase() : "U"}
-                </AvatarFallback>
-              </Avatar>
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuItem asChild><Link to={portal ? `/${portal}/profile` : "/dashboard/profile"}><User className="mr-2 h-4 w-4" />Profile</Link></DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={onLogoutClick} className="cursor-pointer">
-              <LogOut className="mr-2 h-4 w-4" />Logout
-            </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
