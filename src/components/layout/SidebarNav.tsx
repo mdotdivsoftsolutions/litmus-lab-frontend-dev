@@ -15,7 +15,7 @@ import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import { labApi } from "@/lib/api/lab";
 
 interface SidebarNavProps {
-  portal: "lab";
+  portal?: "user" | "admin" | "lab";
   open: boolean;
   onClose: () => void;
   user?: any;
