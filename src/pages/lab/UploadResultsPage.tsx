@@ -3,9 +3,7 @@ import { useParams, Link, useNavigate } from "react-router-dom";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
-import { Upload, ArrowLeft, Loader2, FileText, CheckCircle, Lightbulb, ShieldCheck, FileCheck, HelpCircle } from "lucide-react";
+import { Upload, ArrowLeft, Loader2, FileText, CheckCircle } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import { labApi } from "@/lib/api/lab";
 import { uploadApi } from "@/lib/api/uploadApi";
@@ -22,13 +20,6 @@ export default function UploadResultsPage() {
   const [isUploading, setIsUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
 
-  // Remarks state
-  const [summary, setSummary] = useState("");
-  const [recommendations, setRecommendations] = useState("");
-  const [tips, setTips] = useState("");
-  const [additionalNotes, setAdditionalNotes] = useState("");
-  const [hasInitializedRemarks, setHasInitializedRemarks] = useState(false);
-
   const { data: response, isLoading } = useQuery({
     queryKey: ["labBookings"],
     queryFn: labApi.getMyLabBookings,
@@ -38,25 +29,16 @@ export default function UploadResultsPage() {
   const booking = rawBookings.find((b: any) => b._id === id);
 
   useEffect(() => {
-    if (booking && !hasInitializedRemarks) {
-      if (booking.reportSummary) {
-        setSummary(booking.reportSummary.summary || "");
-        setRecommendations(booking.reportSummary.recommendations || "");
-        setTips(booking.reportSummary.tips || "");
-        setAdditionalNotes(booking.reportSummary.additionalNotes || "");
-      }
-      if (booking.reportFiles && booking.reportFiles.length > 0) {
-        setUploadedUrl(booking.reportFiles[0]);
-      }
-      setHasInitializedRemarks(true);
+    if (booking && booking.reportFiles && booking.reportFiles.length > 0 && !uploadedUrl) {
+      setUploadedUrl(booking.reportFiles[0]);
     }
-  }, [booking, hasInitializedRemarks]);
+  }, [booking, uploadedUrl]);
 
   const submitResultMutation = useMutation({
-    mutationFn: (data: { reportUrl?: string; reportFiles?: string[]; summary: string; recommendations: string; tips: string; additionalNotes: string }) =>
+    mutationFn: (data: { reportUrl?: string; reportFiles?: string[]; summary?: string; recommendations?: string; tips?: string; additionalNotes?: string }) =>
       labApi.submitResult(id as string, data),
     onSuccess: () => {
-      toast.success("Test report and remarks saved successfully");
+      toast.success("Test report uploaded successfully");
       navigate("/lab/bookings");
     },
     onError: (err: any) => {
@@ -126,10 +108,10 @@ export default function UploadResultsPage() {
     }
     submitResultMutation.mutate({
       reportUrl: finalReportUrl,
-      summary: summary.trim(),
-      recommendations: recommendations.trim(),
-      tips: tips.trim(),
-      additionalNotes: additionalNotes.trim(),
+      summary: "",
+      recommendations: "",
+      tips: "",
+      additionalNotes: "",
     });
   };
 
@@ -140,7 +122,7 @@ export default function UploadResultsPage() {
       <div className="flex items-center gap-3">
         <Button variant="ghost" size="icon" asChild><Link to="/lab/bookings"><ArrowLeft className="h-4 w-4" /></Link></Button>
         <div>
-          <h1 className="text-2xl font-bold text-foreground">Upload Report & Summary</h1>
+          <h1 className="text-2xl font-bold text-foreground">Upload Report</h1>
           <p className="text-sm text-muted-foreground">{displayId} · {productName} · {userName}</p>
         </div>
       </div>
@@ -254,87 +236,6 @@ export default function UploadResultsPage() {
         </CardContent>
       </Card>
 
-      {/* Summary, Recommendations, Tips, Additional Notes */}
-      <Card className="border border-border shadow-sm">
-        <CardHeader>
-          <CardTitle className="text-base flex items-center gap-2">
-            <FileCheck className="h-4 w-4 text-primary" /> Report Summary & Technical Remarks
-          </CardTitle>
-          <CardDescription>
-            These details will be reviewed by Admin and presented directly to the user alongside the report.
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-5">
-          {/* 1. Summary */}
-          <div className="space-y-2">
-            <div className="flex items-center justify-between">
-              <Label htmlFor="report-summary" className="text-sm font-semibold flex items-center gap-1.5 text-foreground">
-                <FileText className="h-4 w-4 text-primary" /> 1. Executive Summary
-              </Label>
-              <span className="text-[11px] text-muted-foreground">Overview & key parameters</span>
-            </div>
-            <Textarea
-              id="report-summary"
-              value={summary}
-              onChange={(e) => setSummary(e.target.value)}
-              placeholder="e.g. Sample complies with FSSAI regulations for microbial and nutritional limits. Moisture content was recorded at 12.4%, and heavy metal levels are well within safe thresholds..."
-              className="min-h-[90px] text-sm bg-background/50 focus:bg-background"
-            />
-          </div>
-
-          {/* 2. Recommendations */}
-          <div className="space-y-2">
-            <div className="flex items-center justify-between">
-              <Label htmlFor="report-recommendations" className="text-sm font-semibold flex items-center gap-1.5 text-emerald-700 dark:text-emerald-400">
-                <ShieldCheck className="h-4 w-4 text-emerald-600" /> 2. Actionable Recommendations
-              </Label>
-              <span className="text-[11px] text-muted-foreground">Compliance & safety advice</span>
-            </div>
-            <Textarea
-              id="report-recommendations"
-              value={recommendations}
-              onChange={(e) => setRecommendations(e.target.value)}
-              placeholder="e.g. Recommend maintaining batch moisture under 14% to prevent mold growth during transit. Packaging should be hermetically sealed..."
-              className="min-h-[90px] text-sm bg-background/50 focus:bg-background"
-            />
-          </div>
-
-          {/* 3. Tips */}
-          <div className="space-y-2">
-            <div className="flex items-center justify-between">
-              <Label htmlFor="report-tips" className="text-sm font-semibold flex items-center gap-1.5 text-amber-700 dark:text-amber-400">
-                <Lightbulb className="h-4 w-4 text-amber-600" /> 3. Tips & Best Practices
-              </Label>
-              <span className="text-[11px] text-muted-foreground">Storage, hygiene & shelf-life</span>
-            </div>
-            <Textarea
-              id="report-tips"
-              value={tips}
-              onChange={(e) => setTips(e.target.value)}
-              placeholder="e.g. Store in a cool, dry place below 25°C away from direct sunlight. Ensure FIFO (First-In, First-Out) stock rotation..."
-              className="min-h-[90px] text-sm bg-background/50 focus:bg-background"
-            />
-          </div>
-
-          {/* 4. Additional Notes */}
-          <div className="space-y-2">
-            <div className="flex items-center justify-between">
-              <Label htmlFor="report-notes" className="text-sm font-semibold flex items-center gap-1.5 text-slate-700 dark:text-slate-300">
-                <HelpCircle className="h-4 w-4 text-slate-500" /> 4. Additional Notes & Disclaimers
-              </Label>
-              <span className="text-[11px] text-muted-foreground">Standards, protocols & remarks</span>
-            </div>
-            <Textarea
-              id="report-notes"
-              value={additionalNotes}
-              onChange={(e) => setAdditionalNotes(e.target.value)}
-              placeholder="e.g. Tests performed in accordance with IS/ISO 17025 standards. Results relate strictly to the sample received..."
-              className="min-h-[90px] text-sm bg-background/50 focus:bg-background"
-            />
-          </div>
-        </CardContent>
-      </Card>
-
       <div className="flex items-center justify-end gap-3 pt-2">
         <Button variant="outline" onClick={() => navigate("/lab/bookings")}>Cancel</Button>
         <Button 
@@ -344,11 +245,11 @@ export default function UploadResultsPage() {
           disabled={submitResultMutation.isPending || isUploading}
         >
           {submitResultMutation.isPending ? (
-            <><Loader2 className="h-4 w-4 animate-spin" /> Submitting Results...</>
+            <><Loader2 className="h-4 w-4 animate-spin" /> Submitting Report...</>
           ) : hasExistingReport ? (
-            "Update Report & Remarks"
+            "Update Report"
           ) : (
-            "Submit Results"
+            "Submit Report"
           )}
         </Button>
       </div>
