@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
-import { useQuery, useMutation } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Upload, ArrowLeft, Loader2, FileText, CheckCircle } from "lucide-react";
@@ -13,6 +13,7 @@ import { cn } from "@/lib/utils";
 export default function UploadResultsPage() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const fileInputRef = useRef<HTMLInputElement>(null);
   
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -39,6 +40,7 @@ export default function UploadResultsPage() {
       labApi.submitResult(id as string, data),
     onSuccess: () => {
       toast.success("Test report uploaded successfully");
+      queryClient.invalidateQueries({ queryKey: ["labBookings"] });
       navigate("/lab/bookings");
     },
     onError: (err: any) => {
