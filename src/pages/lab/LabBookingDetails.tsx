@@ -215,7 +215,7 @@ export default function LabBookingDetails() {
           <div>
             <h2 className="text-2xl font-bold text-slate-900">Litmus Order #{booking._id.substring(booking._id.length - 8).toUpperCase()}</h2>
             <div className="flex items-center gap-3 mt-2 text-sm text-slate-500">
-              <span className="flex items-center gap-1"><Calendar className="h-4 w-4" /> {format(new Date(booking.createdAt), "MMMM d, yyyy 'at' HH:mm")}</span>
+              <span className="flex items-center gap-1"><Calendar className="h-4 w-4" /> {format(new Date(booking.createdAt), "MMMM d, yyyy 'at' hh:mm a")}</span>
               <span>•</span>
               <span className="font-medium text-slate-700">{getPrimaryProductName(booking)}</span>
             </div>

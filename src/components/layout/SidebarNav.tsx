@@ -27,8 +27,8 @@ const navItems = [
   { label: "Bookings", icon: ClipboardList, href: "/lab/bookings" },
   { label: "Tests", icon: TestTubes, href: "/lab/tests" },
   { label: "Packages", icon: Package, href: "/lab/packages" },
-  { label: "Schedule", icon: CalendarDays, href: "/lab/schedule" },
   { label: "Employees", icon: Users, href: "/lab/employees" },
+  { label: "Schedule", icon: CalendarDays, href: "/lab/schedule" },
   { label: "Profile", icon: UserCircle, href: "/lab/profile" },
 ];
 
@@ -50,15 +50,13 @@ export function SidebarNav({ portal, open, onClose, user, onLogoutClick }: Sideb
     if (!statsResponse?.data) return null;
     switch (label) {
       case "Bookings":
-        return stats.totalBookings ?? 0;
+        return stats.totalBookings > 0 ? stats.totalBookings : null;
       case "Tests":
-        return stats.totalTests ?? 0;
+        return stats.totalTests > 0 ? stats.totalTests : null;
       case "Packages":
-        return stats.totalPackages ?? 0;
-      case "Schedule":
-        return stats.activeSchedule ?? 0;
+        return stats.totalPackages > 0 ? stats.totalPackages : null;
       case "Employees":
-        return stats.totalEmployees ?? 0;
+        return stats.totalEmployees > 0 ? stats.totalEmployees : null;
       default:
         return null;
     }
@@ -140,7 +138,7 @@ export function SidebarNav({ portal, open, onClose, user, onLogoutClick }: Sideb
                 onClick={onClose}
                 title={collapsed ? `${item.label}${badgeCount !== null && badgeCount !== undefined ? ` (${badgeCount})` : ''}` : undefined}
                 className={cn(
-                  "flex items-center justify-between rounded-lg px-3 py-2 text-sm font-medium transition-all group select-none",
+                  "flex items-center justify-between rounded-lg px-3 py-2 text-sm font-medium transition-all group select-none outline-none focus:outline-none focus-visible:outline-none focus-visible:ring-0",
                   collapsed && "justify-center px-2",
                   isActive 
                     ? "bg-primary/10 text-primary font-semibold" 
