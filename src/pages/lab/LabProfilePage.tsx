@@ -8,8 +8,8 @@ import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
 import { 
   Building2, MapPin, Phone, Mail, Award, ShieldCheck, 
-  Upload, Loader2, CheckCircle2, FileText, Check, 
-  Settings2, Sliders, ExternalLink, Globe, Sparkles, AlertCircle, Building
+  Upload, Loader2, CheckCircle2, FileText, 
+  Settings2, ExternalLink, Edit3, X, Eye
 } from "lucide-react";
 import { labApi } from "@/lib/api/lab";
 import { uploadApi } from "@/lib/api/uploadApi";
@@ -19,6 +19,7 @@ export default function LabProfilePage() {
   const queryClient = useQueryClient();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isUploadingCert, setIsUploadingCert] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
 
   const [formData, setFormData] = useState<any>({
     labName: "",
@@ -58,6 +59,7 @@ export default function LabProfilePage() {
     mutationFn: (data: any) => labApi.updateMyLabProfile(data),
     onSuccess: () => {
       toast.success("Laboratory profile updated successfully!");
+      setIsEditing(false);
       queryClient.invalidateQueries({ queryKey: ["labProfile"] });
     },
     onError: (error: any) => {
@@ -79,10 +81,12 @@ export default function LabProfilePage() {
   };
 
   const handleSwitchChange = (name: string, checked: boolean) => {
+    if (!isEditing) return;
     setFormData((prev: any) => ({ ...prev, [name]: checked }));
   };
 
   const handleCertUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!isEditing) return;
     const file = e.target.files?.[0];
     if (!file) return;
 
@@ -101,6 +105,16 @@ export default function LabProfilePage() {
     } finally {
       setIsUploadingCert(false);
     }
+  };
+
+  const handleCancel = () => {
+    if (profileData?.data) {
+      setFormData({
+        ...profileData.data,
+        location: { ...(profileData.data.location || {}) }
+      });
+    }
+    setIsEditing(false);
   };
 
   const handleSave = () => {
@@ -135,8 +149,14 @@ export default function LabProfilePage() {
             <h1 className="text-2xl font-bold text-foreground font-nunito tracking-tight">
               Laboratory Profile & Facility Settings
             </h1>
-            <Badge variant="outline" className="bg-primary/10 text-primary border-primary/20 text-xs font-semibold">
-              Verified Facility
+            <Badge 
+              variant="outline" 
+              className={isEditing 
+                ? "bg-amber-50 text-amber-800 border-amber-300 text-xs font-semibold" 
+                : "bg-primary/10 text-primary border-primary/20 text-xs font-semibold"
+              }
+            >
+              {isEditing ? "Editing Enabled" : "Verified Facility"}
             </Badge>
           </div>
           <p className="text-sm text-muted-foreground mt-1">
@@ -144,18 +164,49 @@ export default function LabProfilePage() {
           </p>
         </div>
 
-        <Button 
-          onClick={handleSave} 
-          disabled={updateMutation.isPending} 
-          className="gap-2 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold shadow-xs"
-        >
-          {updateMutation.isPending ? (
-            <Loader2 className="h-4 w-4 animate-spin" />
+        {/* Dynamic Action Buttons */}
+        <div className="flex items-center gap-2.5">
+          {!isEditing ? (
+            <Button 
+              onClick={() => setIsEditing(true)} 
+              className="gap-2 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold shadow-xs"
+            >
+              <Edit3 className="h-4 w-4" />
+              Edit Profile
+            </Button>
           ) : (
-            <CheckCircle2 className="h-4 w-4" />
+            <>
+              <Button 
+                variant="outline"
+                size="sm"
+                onClick={handleCancel}
+                disabled={updateMutation.isPending}
+                className="text-xs font-semibold border-slate-200 text-slate-700 bg-white hover:bg-slate-50 h-9 px-3.5"
+              >
+                <X className="h-3.5 w-3.5 mr-1" />
+                Cancel
+              </Button>
+
+              <Button 
+                onClick={handleSave} 
+                disabled={updateMutation.isPending} 
+                className="gap-2 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold text-xs h-9 shadow-xs px-4"
+              >
+                {updateMutation.isPending ? (
+                  <>
+                    <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                    Updating...
+                  </>
+                ) : (
+                  <>
+                    <CheckCircle2 className="h-3.5 w-3.5" />
+                    Update Profile
+                  </>
+                )}
+              </Button>
+            </>
           )}
-          Save Changes
-        </Button>
+        </div>
       </div>
 
       {/* Overview Stat Ribbon */}
@@ -226,18 +277,26 @@ export default function LabProfilePage() {
           {/* Basic Information Card */}
           <Card className="border border-border/90 shadow-2xs rounded-xl bg-white overflow-hidden">
             <CardHeader className="bg-slate-50/50 border-b border-slate-100 p-5">
-              <div className="flex items-center gap-3">
-                <div className="h-9 w-9 rounded-lg bg-primary/10 text-primary flex items-center justify-center font-bold">
-                  <Building2 className="h-5 w-5 text-primary" />
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="h-9 w-9 rounded-lg bg-primary/10 text-primary flex items-center justify-center font-bold">
+                    <Building2 className="h-5 w-5 text-primary" />
+                  </div>
+                  <div>
+                    <CardTitle className="text-base font-bold text-slate-900 font-nunito">
+                      Facility Identification & Location
+                    </CardTitle>
+                    <CardDescription className="text-xs text-muted-foreground">
+                      Official laboratory registration name and physical operating address
+                    </CardDescription>
+                  </div>
                 </div>
-                <div>
-                  <CardTitle className="text-base font-bold text-slate-900 font-nunito">
-                    Facility Identification & Location
-                  </CardTitle>
-                  <CardDescription className="text-xs text-muted-foreground">
-                    Official laboratory registration name and physical operating address
-                  </CardDescription>
-                </div>
+
+                {!isEditing && (
+                  <Badge variant="outline" className="bg-slate-100 text-slate-600 border-slate-200 text-[10px] font-medium">
+                    Read-Only
+                  </Badge>
+                )}
               </div>
             </CardHeader>
 
@@ -252,7 +311,12 @@ export default function LabProfilePage() {
                   placeholder="e.g. Apex Diagnostics & Research Centre" 
                   value={formData.labName || ""} 
                   onChange={handleChange} 
-                  className="h-10 text-xs font-semibold bg-white border-slate-200 focus-visible:ring-primary" 
+                  disabled={!isEditing}
+                  className={`h-10 text-xs font-semibold border-slate-200 transition-all ${
+                    isEditing 
+                      ? "bg-white focus-visible:ring-primary shadow-2xs" 
+                      : "bg-slate-50/80 text-slate-800 cursor-default opacity-95"
+                  }`} 
                 />
               </div>
               
@@ -267,7 +331,12 @@ export default function LabProfilePage() {
                     placeholder="e.g. 142 Medical District, Sector 4" 
                     value={formData.location?.address || ""} 
                     onChange={handleChange} 
-                    className="h-10 text-xs bg-white border-slate-200 focus-visible:ring-primary pr-8" 
+                    disabled={!isEditing}
+                    className={`h-10 text-xs border-slate-200 pr-8 transition-all ${
+                      isEditing 
+                        ? "bg-white focus-visible:ring-primary shadow-2xs" 
+                        : "bg-slate-50/80 text-slate-800 cursor-default opacity-95"
+                    }`} 
                   />
                   <MapPin className="h-4 w-4 text-slate-400 absolute right-2.5 top-3" />
                 </div>
@@ -284,7 +353,12 @@ export default function LabProfilePage() {
                     placeholder="e.g. Mumbai" 
                     value={formData.location?.city || ""} 
                     onChange={handleChange} 
-                    className="h-9 text-xs bg-white border-slate-200 focus-visible:ring-primary" 
+                    disabled={!isEditing}
+                    className={`h-9 text-xs border-slate-200 transition-all ${
+                      isEditing 
+                        ? "bg-white focus-visible:ring-primary" 
+                        : "bg-slate-50/80 text-slate-800 cursor-default opacity-95"
+                    }`} 
                   />
                 </div>
                 <div className="space-y-1.5">
@@ -297,7 +371,12 @@ export default function LabProfilePage() {
                     placeholder="e.g. Maharashtra" 
                     value={formData.location?.state || ""} 
                     onChange={handleChange} 
-                    className="h-9 text-xs bg-white border-slate-200 focus-visible:ring-primary" 
+                    disabled={!isEditing}
+                    className={`h-9 text-xs border-slate-200 transition-all ${
+                      isEditing 
+                        ? "bg-white focus-visible:ring-primary" 
+                        : "bg-slate-50/80 text-slate-800 cursor-default opacity-95"
+                    }`} 
                   />
                 </div>
               </div>
@@ -319,7 +398,12 @@ export default function LabProfilePage() {
                         placeholder="+91 98765 43210" 
                         value={formData.contactPhone || ""} 
                         onChange={handleChange} 
-                        className="h-9 text-xs font-mono bg-white border-slate-200 focus-visible:ring-primary pr-8" 
+                        disabled={!isEditing}
+                        className={`h-9 text-xs font-mono border-slate-200 pr-8 transition-all ${
+                          isEditing 
+                            ? "bg-white focus-visible:ring-primary" 
+                            : "bg-slate-50/80 text-slate-800 cursor-default opacity-95"
+                        }`} 
                       />
                       <Phone className="h-3.5 w-3.5 text-slate-400 absolute right-2.5 top-3" />
                     </div>
@@ -335,7 +419,12 @@ export default function LabProfilePage() {
                         placeholder="lab@domain.com" 
                         value={formData.contactEmail || ""} 
                         onChange={handleChange} 
-                        className="h-9 text-xs bg-white border-slate-200 focus-visible:ring-primary pr-8" 
+                        disabled={!isEditing}
+                        className={`h-9 text-xs border-slate-200 pr-8 transition-all ${
+                          isEditing 
+                            ? "bg-white focus-visible:ring-primary" 
+                            : "bg-slate-50/80 text-slate-800 cursor-default opacity-95"
+                        }`} 
                       />
                       <Mail className="h-3.5 w-3.5 text-slate-400 absolute right-2.5 top-3" />
                     </div>
@@ -384,8 +473,13 @@ export default function LabProfilePage() {
                     name="nablAccreditationNumber" 
                     value={formData.nablAccreditationNumber || ""} 
                     onChange={handleChange} 
+                    disabled={!isEditing}
                     placeholder="e.g. TC-5678 / MC-1290" 
-                    className="h-9 text-xs font-mono font-bold bg-white border-slate-200 focus-visible:ring-primary pr-8" 
+                    className={`h-9 text-xs font-mono font-bold border-slate-200 pr-8 transition-all ${
+                      isEditing 
+                        ? "bg-white focus-visible:ring-primary" 
+                        : "bg-slate-50/80 text-slate-800 cursor-default opacity-95"
+                    }`} 
                   />
                   <Award className="h-3.5 w-3.5 text-slate-400 absolute right-2.5 top-3" />
                 </div>
@@ -424,30 +518,38 @@ export default function LabProfilePage() {
                       </div>
                     </div>
 
-                    <Button 
-                      type="button" 
-                      variant="outline" 
-                      size="sm" 
-                      className="h-7 text-xs bg-white border-emerald-300 text-emerald-800 hover:bg-emerald-100 shrink-0"
-                      onClick={() => fileInputRef.current?.click()}
-                      disabled={isUploadingCert}
-                    >
-                      {isUploadingCert ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : "Replace"}
-                    </Button>
+                    {isEditing && (
+                      <Button 
+                        type="button" 
+                        variant="outline" 
+                        size="sm" 
+                        className="h-7 text-xs bg-white border-emerald-300 text-emerald-800 hover:bg-emerald-100 shrink-0"
+                        onClick={() => fileInputRef.current?.click()}
+                        disabled={isUploadingCert}
+                      >
+                        {isUploadingCert ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : "Replace"}
+                      </Button>
+                    )}
                   </div>
                 ) : (
                   <div 
-                    onClick={() => fileInputRef.current?.click()}
-                    className="flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-slate-200 bg-slate-50/60 p-5 hover:border-primary/50 hover:bg-primary/5 transition-all cursor-pointer group"
+                    onClick={() => isEditing && fileInputRef.current?.click()}
+                    className={`flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-slate-200 p-5 transition-all ${
+                      isEditing 
+                        ? "bg-slate-50/60 hover:border-primary/50 hover:bg-primary/5 cursor-pointer group" 
+                        : "bg-slate-50/40 opacity-75 cursor-default"
+                    }`}
                   >
-                    <div className="h-10 w-10 bg-primary/10 text-primary rounded-xl flex items-center justify-center mb-2 group-hover:scale-110 transition-transform">
+                    <div className="h-10 w-10 bg-primary/10 text-primary rounded-xl flex items-center justify-center mb-2">
                       {isUploadingCert ? (
                         <Loader2 className="h-5 w-5 animate-spin text-primary" />
                       ) : (
                         <Upload className="h-5 w-5 text-primary" />
                       )}
                     </div>
-                    <p className="text-xs font-bold text-slate-800">Click to upload NABL Certificate</p>
+                    <p className="text-xs font-bold text-slate-800">
+                      {isEditing ? "Click to upload NABL Certificate" : "No certificate uploaded yet"}
+                    </p>
                     <p className="text-[11px] text-muted-foreground mt-0.5">PDF, JPG, or PNG up to 5MB</p>
                   </div>
                 )}
@@ -455,69 +557,77 @@ export default function LabProfilePage() {
             </CardContent>
           </Card>
 
-          {/* Operational Workflow & Booking Settings Card */}
+          {/* Operational Workflow & Platform Policies Card (Admin Managed) */}
           <Card className="border border-border/90 shadow-2xs rounded-xl bg-white overflow-hidden">
             <CardHeader className="bg-slate-50/50 border-b border-slate-100 p-5">
-              <div className="flex items-center gap-3">
-                <div className="h-9 w-9 rounded-lg bg-indigo-100 text-indigo-800 flex items-center justify-center font-bold">
-                  <Settings2 className="h-5 w-5 text-indigo-700" />
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="h-9 w-9 rounded-lg bg-indigo-100 text-indigo-800 flex items-center justify-center font-bold">
+                    <Settings2 className="h-5 w-5 text-indigo-700" />
+                  </div>
+                  <div>
+                    <CardTitle className="text-base font-bold text-slate-900 font-nunito">
+                      Workflow & Automation Policies
+                    </CardTitle>
+                    <CardDescription className="text-xs text-muted-foreground">
+                      Platform policies configured by Litmus Network Administration
+                    </CardDescription>
+                  </div>
                 </div>
-                <div>
-                  <CardTitle className="text-base font-bold text-slate-900 font-nunito">
-                    Workflow & Automation Policies
-                  </CardTitle>
-                  <CardDescription className="text-xs text-muted-foreground">
-                    Order confirmation & report authorization rules
-                  </CardDescription>
-                </div>
+
+                <Badge variant="outline" className="bg-slate-100 text-slate-700 border-slate-200 text-[10px] font-bold text-nowrap">
+                  Admin Managed
+                </Badge>
               </div>
             </CardHeader>
 
-            <CardContent className="p-5 space-y-4">
-              <div className="flex items-center justify-between p-3.5 rounded-xl border border-slate-200 bg-slate-50/60 hover:bg-slate-50 transition-colors">
+            <CardContent className="p-5 space-y-3.5">
+              <div className="flex items-start justify-between p-3.5 rounded-xl border border-slate-200 bg-slate-50/60">
                 <div className="space-y-0.5 pr-2">
-                  <Label className="text-xs font-bold text-slate-900 cursor-pointer" onClick={() => handleSwitchChange('isAutoBooking', !formData.isAutoBooking)}>
+                  <span className="text-xs font-bold text-slate-900 block">
                     Auto-Accept Bookings
-                  </Label>
+                  </span>
                   <p className="text-[11px] text-muted-foreground">
-                    Automatically confirm incoming test orders without manual queue review
+                    Automatically confirms incoming test orders without manual queue review
                   </p>
                 </div>
-                <Switch 
-                  checked={!!formData.isAutoBooking} 
-                  onCheckedChange={(c) => handleSwitchChange('isAutoBooking', c)} 
-                />
+                <Badge 
+                  variant="outline" 
+                  className={formData.isAutoBooking 
+                    ? "bg-emerald-50 text-emerald-800 border-emerald-200 text-[10px] font-bold shrink-0" 
+                    : "bg-slate-100 text-slate-600 border-slate-200 text-[10px] font-bold shrink-0"
+                  }
+                >
+                  {formData.isAutoBooking ? "Enabled" : "Manual Review"}
+                </Badge>
               </div>
 
-              <div className="flex items-center justify-between p-3.5 rounded-xl border border-slate-200 bg-slate-50/60 hover:bg-slate-50 transition-colors">
+              <div className="flex items-start justify-between p-3.5 rounded-xl border border-slate-200 bg-slate-50/60">
                 <div className="space-y-0.5 pr-2">
-                  <Label className="text-xs font-bold text-slate-900 cursor-pointer" onClick={() => handleSwitchChange('requiresAdminApprovalForReport', !formData.requiresAdminApprovalForReport)}>
+                  <span className="text-xs font-bold text-slate-900 block">
                     Require Admin Report Sign-Off
-                  </Label>
+                  </span>
                   <p className="text-[11px] text-muted-foreground">
                     Diagnostic reports must be reviewed by Lab Admin before customer release
                   </p>
                 </div>
-                <Switch 
-                  checked={!!formData.requiresAdminApprovalForReport} 
-                  onCheckedChange={(c) => handleSwitchChange('requiresAdminApprovalForReport', c)} 
-                />
+                <Badge 
+                  variant="outline" 
+                  className={formData.requiresAdminApprovalForReport 
+                    ? "bg-amber-50 text-amber-800 border-amber-200 text-[10px] font-bold shrink-0" 
+                    : "bg-slate-100 text-slate-600 border-slate-200 text-[10px] font-bold shrink-0"
+                  }
+                >
+                  {formData.requiresAdminApprovalForReport ? "Required" : "Standard Delivery"}
+                </Badge>
               </div>
 
-              {/* Bottom Quick Save Button */}
-              <div className="pt-2">
-                <Button 
-                  onClick={handleSave} 
-                  disabled={updateMutation.isPending} 
-                  className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-semibold text-xs h-10 shadow-xs gap-2"
-                >
-                  {updateMutation.isPending ? (
-                    <Loader2 className="h-4 w-4 animate-spin" />
-                  ) : (
-                    <CheckCircle2 className="h-4 w-4" />
-                  )}
-                  Save Profile & Policies
-                </Button>
+              {/* Admin note */}
+              <div className="p-3 bg-slate-50 rounded-lg border border-slate-200/80 flex items-start gap-2.5">
+                <ShieldCheck className="h-4 w-4 text-slate-400 shrink-0 mt-0.5" />
+                <p className="text-[11px] text-muted-foreground leading-relaxed">
+                  These workflow automation policies are governed by Litmus Platform Administration. Contact support to request adjustments.
+                </p>
               </div>
             </CardContent>
           </Card>
