@@ -8,17 +8,17 @@ const badgeVariants = cva(
   {
     variants: {
       variant: {
-        default: "border-transparent bg-primary text-primary-foreground hover:bg-primary/80",
-        secondary: "border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80",
-        destructive: "border-transparent bg-destructive text-destructive-foreground hover:bg-destructive/80",
-        outline: "text-foreground",
-        pending: "border-transparent bg-flame-red-tint text-flame-deep",
-        approved: "border-transparent bg-litmus-mint text-litmus-dark",
-        rejected: "border-transparent bg-status-rejected-bg text-status-rejected",
-        completed: "border-transparent bg-status-completed-bg text-litmus-teal",
-        inprogress: "border-transparent bg-flame-amber-tint text-flame-deep",
-        nabl: "border-transparent bg-litmus-dark text-white",
-        fssai: "border-transparent bg-litmus-teal text-white",
+        default: "border-transparent bg-primary text-primary-foreground hover:bg-primary/90",
+        secondary: "border-slate-200/80 bg-slate-100 text-slate-700 hover:bg-slate-200/80",
+        destructive: "border-rose-200 bg-rose-50 text-rose-700 hover:bg-rose-100",
+        outline: "text-slate-700 border-slate-200 bg-transparent",
+        pending: "border-amber-200/80 bg-amber-50 text-amber-700",
+        approved: "border-emerald-200/80 bg-emerald-50 text-emerald-700",
+        rejected: "border-rose-200/80 bg-rose-50 text-rose-700",
+        completed: "border-teal-200/80 bg-teal-50 text-teal-700",
+        inprogress: "border-sky-200/80 bg-sky-50 text-sky-700",
+        nabl: "border-transparent bg-slate-800 text-white",
+        fssai: "border-transparent bg-teal-800 text-white",
       },
     },
     defaultVariants: {

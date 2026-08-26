@@ -153,15 +153,131 @@ export default function LabDashboard() {
         )}
       </div>
 
-      {/* Main Grid: Recent Bookings & Pending Uploads / Load Chart */}
-      <div className="grid gap-6 lg:grid-cols-12 items-start">
-        {/* Left Column: Recent Bookings */}
+      {/* Main Grid: Weekly Load Activity & Recent Bookings / Pending Uploads */}
+      <div className="grid gap-3 lg:grid-cols-12 items-start">
+        {/* Left Column: Weekly Load Activity & Performance */}
         <div className="lg:col-span-7 space-y-6">
+          {/* Weekly Load Chart */}
+          <Card className="border border-slate-200/80 shadow-xs bg-white rounded-xl overflow-hidden">
+            <CardHeader className="p-4 sm:p-5 border-b border-slate-100 bg-slate-50/40 flex flex-row items-center justify-between">
+              <div>
+                <CardTitle className="text-sm font-bold text-slate-900 flex items-center gap-2">
+                  <Calendar className="h-4 w-4 text-primary" />
+                  <span>Weekly Load Activity</span>
+                </CardTitle>
+                <CardDescription className="text-xs text-muted-foreground mt-0.5">
+                  Assigned diagnostic bookings received across the past 7 days.
+                </CardDescription>
+              </div>
+              <div className="hidden sm:flex items-center gap-2">
+                <span className="text-[11px] font-medium text-muted-foreground bg-slate-100 px-2.5 py-1 rounded-md border border-slate-200/60">
+                  Last 7 Days
+                </span>
+              </div>
+            </CardHeader>
+            <CardContent className="p-4 sm:p-5">
+              {isLoading ? (
+                <Skeleton className="h-[250px] w-full rounded-lg" />
+              ) : (
+                <div className="h-[260px] w-full pt-3">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart data={weeklyData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                      <CartesianGrid strokeDasharray="3 3" stroke="#F1F5F9" vertical={false} />
+                      <XAxis 
+                        dataKey="day" 
+                        tick={{ fontSize: 12, fill: "#64748B" }} 
+                        axisLine={{ stroke: "#E2E8F0" }}
+                        tickLine={false}
+                      />
+                      <YAxis 
+                        tick={{ fontSize: 12, fill: "#64748B" }} 
+                        allowDecimals={false}
+                        axisLine={false}
+                        tickLine={false}
+                      />
+                      <Tooltip 
+                        formatter={(val: any) => [`${val} Bookings`, "Volume"]}
+                        contentStyle={{ background: "#0F172A", border: "none", borderRadius: 8, color: "#fff", fontSize: 12 }} 
+                      />
+                      <Bar 
+                        dataKey="bookings" 
+                        fill="hsl(var(--primary))" 
+                        radius={[6, 6, 0, 0]} 
+                        maxBarSize={48}
+                      />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Right Column: Pending Uploads & Recent Assigned Bookings */}
+        <div className="lg:col-span-5 space-y-4">
+          {/* Pending Uploads Card */}
+          <Card className="border border-slate-200/80 shadow-xs bg-white rounded-xl overflow-hidden">
+            <CardHeader className="p-4 sm:p-5 border-b border-slate-100 bg-slate-50/40">
+              <div className="flex items-center justify-between">
+                <CardTitle className="text-sm font-bold text-slate-900 flex items-center gap-2">
+                  <AlertCircle className="h-4 w-4 text-amber-500" />
+                  <span>Pending Report Uploads</span>
+                </CardTitle>
+                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-50 text-amber-700 border border-amber-200">
+                  {pendingUploads.length} Action Needed
+                </span>
+              </div>
+              <CardDescription className="text-xs text-muted-foreground mt-0.5">
+                Active tests awaiting certified diagnostic report upload.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="p-4 sm:p-5 space-y-2.5">
+              {isLoading ? (
+                Array.from({ length: 2 }).map((_, i) => (
+                  <Skeleton key={i} className="h-14 w-full rounded-lg" />
+                ))
+              ) : pendingUploads.length === 0 ? (
+                <div className="py-6 text-center text-xs text-muted-foreground flex flex-col items-center justify-center gap-1.5">
+                  <FileCheck2 className="h-6 w-6 text-emerald-600" />
+                  <span className="font-semibold text-slate-700">All reports are up to date!</span>
+                  <p className="text-[11px] text-muted-foreground">No pending report uploads required at this moment.</p>
+                </div>
+              ) : (
+                pendingUploads.map((p: any) => (
+                  <div 
+                    key={p.id} 
+                    className="flex items-center justify-between text-xs rounded-xl border border-slate-200/80 p-3 bg-slate-50/50 hover:bg-slate-100/70 transition-colors"
+                  >
+                    <div className="min-w-0 space-y-0.5">
+                      <div className="flex items-center gap-2">
+                        <span className="font-mono font-bold text-slate-900">{p.displayId || p.id}</span>
+                        <StatusBadge status={p.status} />
+                      </div>
+                      <p className="text-slate-800 truncate font-semibold">{p.user}</p>
+                      {p.product && (
+                        <p className="text-[11px] text-muted-foreground truncate">{p.product}</p>
+                      )}
+                    </div>
+                    <Button
+                      size="sm"
+                      onClick={() => navigate(`/lab/bookings/${p.id}/upload`)}
+                      className="text-xs h-7 px-2.5 bg-primary hover:bg-primary/90 text-white font-medium shadow-2xs gap-1 shrink-0 ml-2"
+                    >
+                      <Upload className="h-3 w-3" />
+                      <span>Upload</span>
+                    </Button>
+                  </div>
+                ))
+              )}
+            </CardContent>
+          </Card>
+
+          {/* Recent Assigned Bookings */}
           <Card className="border border-slate-200/80 shadow-xs bg-white rounded-xl overflow-hidden">
             <CardHeader className="p-4 sm:p-5 border-b border-slate-100 bg-slate-50/40 flex flex-row items-center justify-between">
               <div>
                 <CardTitle className="text-sm font-bold text-slate-900">Recent Assigned Bookings</CardTitle>
-                <CardDescription className="text-xs text-muted-foreground">Orders allocated to this laboratory for testing.</CardDescription>
+                <CardDescription className="text-xs text-muted-foreground">Orders allocated to this laboratory.</CardDescription>
               </div>
               <Button 
                 variant="ghost" 
@@ -242,114 +358,6 @@ export default function LabDashboard() {
                     </div>
                   </div>
                 ))
-              )}
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Right Column: Pending Uploads & Weekly Load */}
-        <div className="lg:col-span-5 space-y-6">
-          {/* Pending Uploads Card */}
-          <Card className="border border-slate-200/80 shadow-xs bg-white rounded-xl overflow-hidden">
-            <CardHeader className="p-4 sm:p-5 border-b border-slate-100 bg-slate-50/40">
-              <div className="flex items-center justify-between">
-                <CardTitle className="text-sm font-bold text-slate-900 flex items-center gap-2">
-                  <AlertCircle className="h-4 w-4 text-amber-500" />
-                  <span>Pending Report Uploads</span>
-                </CardTitle>
-                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-50 text-amber-700 border border-amber-200">
-                  {pendingUploads.length} Action Needed
-                </span>
-              </div>
-              <CardDescription className="text-xs text-muted-foreground mt-0.5">
-                Active tests awaiting certified diagnostic report upload.
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="p-4 sm:p-5 space-y-2.5">
-              {isLoading ? (
-                Array.from({ length: 2 }).map((_, i) => (
-                  <Skeleton key={i} className="h-14 w-full rounded-lg" />
-                ))
-              ) : pendingUploads.length === 0 ? (
-                <div className="py-6 text-center text-xs text-muted-foreground flex flex-col items-center justify-center gap-1.5">
-                  <FileCheck2 className="h-6 w-6 text-emerald-600" />
-                  <span className="font-semibold text-slate-700">All reports are up to date!</span>
-                  <p className="text-[11px] text-muted-foreground">No pending report uploads required at this moment.</p>
-                </div>
-              ) : (
-                pendingUploads.map((p: any) => (
-                  <div 
-                    key={p.id} 
-                    className="flex items-center justify-between text-xs rounded-xl border border-slate-200/80 p-3 bg-slate-50/50 hover:bg-slate-100/70 transition-colors"
-                  >
-                    <div className="min-w-0 space-y-0.5">
-                      <div className="flex items-center gap-2">
-                        <span className="font-mono font-bold text-slate-900">{p.displayId || p.id}</span>
-                        <StatusBadge status={p.status} />
-                      </div>
-                      <p className="text-slate-800 truncate font-semibold">{p.user}</p>
-                      {p.product && (
-                        <p className="text-[11px] text-muted-foreground truncate">{p.product}</p>
-                      )}
-                    </div>
-                    <Button
-                      size="sm"
-                      onClick={() => navigate(`/lab/bookings/${p.id}/upload`)}
-                      className="text-xs h-7 px-2.5 bg-primary hover:bg-primary/90 text-white font-medium shadow-2xs gap-1 shrink-0 ml-2"
-                    >
-                      <Upload className="h-3 w-3" />
-                      <span>Upload</span>
-                    </Button>
-                  </div>
-                ))
-              )}
-            </CardContent>
-          </Card>
-
-          {/* Weekly Load Chart */}
-          <Card className="border border-slate-200/80 shadow-xs bg-white rounded-xl overflow-hidden">
-            <CardHeader className="p-4 sm:p-5 border-b border-slate-100 bg-slate-50/40">
-              <CardTitle className="text-sm font-bold text-slate-900 flex items-center gap-2">
-                <Calendar className="h-4 w-4 text-primary" />
-                <span>Weekly Load Activity</span>
-              </CardTitle>
-              <CardDescription className="text-xs text-muted-foreground">
-                Assigned diagnostic bookings received across the past 7 days.
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="p-4 sm:p-5">
-              {isLoading ? (
-                <Skeleton className="h-[160px] w-full rounded-lg" />
-              ) : (
-                <div className="h-[170px] w-full pt-2">
-                  <ResponsiveContainer width="100%" height="100%">
-                    <BarChart data={weeklyData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                      <CartesianGrid strokeDasharray="3 3" stroke="#F1F5F9" vertical={false} />
-                      <XAxis 
-                        dataKey="day" 
-                        tick={{ fontSize: 11, fill: "#64748B" }} 
-                        axisLine={{ stroke: "#E2E8F0" }}
-                        tickLine={false}
-                      />
-                      <YAxis 
-                        tick={{ fontSize: 11, fill: "#64748B" }} 
-                        allowDecimals={false}
-                        axisLine={false}
-                        tickLine={false}
-                      />
-                      <Tooltip 
-                        formatter={(val: any) => [`${val} Bookings`, "Volume"]}
-                        contentStyle={{ background: "#0F172A", border: "none", borderRadius: 8, color: "#fff", fontSize: 12 }} 
-                      />
-                      <Bar 
-                        dataKey="bookings" 
-                        fill="hsl(var(--primary))" 
-                        radius={[4, 4, 0, 0]} 
-                        maxBarSize={36}
-                      />
-                    </BarChart>
-                  </ResponsiveContainer>
-                </div>
               )}
             </CardContent>
           </Card>

@@ -7,6 +7,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Plus, Edit, AlertCircle, Package as PackageIcon } from "lucide-react";
 import { labApi } from "@/lib/api/lab";
 import { Skeleton } from "@/components/ui/skeleton";
+import { StatusBadge } from "@/components/ui/status-badge";
 
 export default function LabPackagesPage() {
   const { data: packagesData, isLoading } = useQuery({
@@ -16,37 +17,32 @@ export default function LabPackagesPage() {
 
   const packages = packagesData?.data || [];
 
-  const getStatusBadge = (status: string) => {
-    switch (status) {
-      case 'APPROVED': return <Badge className="bg-emerald-500">Approved</Badge>;
-      case 'REJECTED': return <Badge variant="destructive">Rejected</Badge>;
-      default: return <Badge variant="secondary" className="bg-yellow-500">Pending Approval</Badge>;
-    }
-  };
-
   return (
     <div className="space-y-6 animate-fade-in pb-20">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-foreground">My Packages</h1>
-        <Button asChild>
+        <div>
+          <h1 className="text-2xl font-bold text-foreground">My Packages</h1>
+          <p className="text-sm text-muted-foreground mt-1">Manage bundled diagnostic test health packages offered by your lab</p>
+        </div>
+        <Button asChild className="gap-2 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold shadow-xs">
           <Link to="/lab/packages/new">
-            <Plus className="mr-2 h-4 w-4" /> Add New Package
+            <Plus className="h-4 w-4" /> Add New Package
           </Link>
         </Button>
       </div>
 
-      <Card className="border border-border shadow-sm overflow-hidden">
+      <Card className="border border-slate-200/80 shadow-xs bg-white rounded-xl overflow-hidden">
         <div className="overflow-x-auto">
           <Table>
             <TableHeader>
-              <TableRow className="bg-muted/50">
-                <TableHead>Package Name</TableHead>
-                <TableHead>Category</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Original (₹)</TableHead>
-                <TableHead>Litmus Price (₹)</TableHead>
-                <TableHead>Rejection Reason</TableHead>
-                <TableHead>Actions</TableHead>
+              <TableRow className="bg-slate-50/70 border-b border-slate-200">
+                <TableHead className="font-semibold text-slate-700">Package Name</TableHead>
+                <TableHead className="font-semibold text-slate-700">Category</TableHead>
+                <TableHead className="font-semibold text-slate-700">Status</TableHead>
+                <TableHead className="font-semibold text-slate-700">Original (₹)</TableHead>
+                <TableHead className="font-semibold text-slate-700">Litmus Price (₹)</TableHead>
+                <TableHead className="font-semibold text-slate-700">Rejection Reason</TableHead>
+                <TableHead className="text-right font-semibold text-slate-700">Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -64,37 +60,40 @@ export default function LabPackagesPage() {
                 ))
               ) : packages.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={7} className="text-center py-8 text-muted-foreground">
+                  <TableCell colSpan={7} className="text-center py-12 text-muted-foreground">
                     <div className="flex flex-col items-center justify-center gap-2">
-                      <PackageIcon className="h-8 w-8 text-muted-foreground/50" />
-                      <span>No packages found. Add one to get started!</span>
+                      <div className="h-10 w-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-400">
+                        <PackageIcon className="h-5 w-5" />
+                      </div>
+                      <span className="font-semibold text-slate-700">No packages found</span>
+                      <p className="text-xs text-muted-foreground">Add your first bundled test package to get started.</p>
                     </div>
                   </TableCell>
                 </TableRow>
               ) : packages.map((p: any) => (
-                <TableRow key={p._id}>
-                  <TableCell className="font-medium max-w-[200px] truncate" title={p.name}>
+                <TableRow key={p._id} className="hover:bg-slate-50/80 transition-colors">
+                  <TableCell className="font-semibold text-slate-900 max-w-[200px] truncate" title={p.name}>
                     {p.name}
                   </TableCell>
                   <TableCell>
-                    <Badge variant="outline" className="capitalize">{p.category}</Badge>
+                    <Badge variant="outline" className="capitalize bg-slate-100/80 text-slate-700 border-slate-200 font-medium">{p.category}</Badge>
                   </TableCell>
                   <TableCell>
-                    {getStatusBadge(p.approvalStatus)}
+                    <StatusBadge status={p.approvalStatus || "PENDING"} />
                   </TableCell>
                   <TableCell className="font-medium text-slate-400 line-through">₹{p.mrp?.toLocaleString() || 0}</TableCell>
-                  <TableCell className="font-medium text-emerald-600">
+                  <TableCell className="font-semibold text-primary">
                     ₹{p.price?.toLocaleString() || 0}
                   </TableCell>
-                  <TableCell className="text-sm max-w-[200px] truncate text-destructive">
+                  <TableCell className="text-xs max-w-[200px] truncate text-rose-600">
                     {p.rejectionReason && (
-                      <span className="flex items-center gap-1" title={p.rejectionReason}>
-                        <AlertCircle className="h-3 w-3" /> {p.rejectionReason}
+                      <span className="flex items-center gap-1 font-medium" title={p.rejectionReason}>
+                        <AlertCircle className="h-3.5 w-3.5 shrink-0" /> {p.rejectionReason}
                       </span>
                     )}
                   </TableCell>
                   <TableCell className="text-right">
-                    <Button variant="ghost" size="icon" asChild>
+                    <Button variant="ghost" size="icon" className="h-8 w-8 text-slate-500 hover:text-primary hover:bg-primary/10 rounded-lg" asChild>
                       <Link to={`/lab/packages/edit/${p._id}`}>
                         <Edit className="h-4 w-4" />
                       </Link>

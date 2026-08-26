@@ -12,6 +12,7 @@ import { labEmployeeApi } from "@/lib/api/labEmployee";
 import { uploadApi } from "@/lib/api/uploadApi";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
+import { StatusBadge } from "@/components/ui/status-badge";
 import { ConfirmDialog } from "@/components/ui/confirm-dialog";
 import {
   Sheet,
@@ -233,15 +234,7 @@ export default function LabEmployeesPage() {
                     </div>
                   </div>
                 </div>
-                <Badge 
-                  variant="outline"
-                  className={emp.isActive !== false 
-                    ? "bg-emerald-50 text-emerald-800 border-emerald-200 text-[10px] font-bold" 
-                    : "bg-slate-100 text-slate-600 border-slate-200 text-[10px] font-bold"
-                  }
-                >
-                  {emp.isActive !== false ? "Active" : "Inactive"}
-                </Badge>
+                <StatusBadge status={emp.isActive !== false ? "Active" : "Inactive"} />
               </div>
               
               <div className="mt-4 pt-3.5 border-t border-slate-100 flex items-center justify-between text-xs">

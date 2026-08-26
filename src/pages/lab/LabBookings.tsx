@@ -167,7 +167,11 @@ export default function LabBookings() {
                     <TableCell className="font-medium font-mono text-sm">{b._id.substring(b._id.length - 8).toUpperCase()}</TableCell>
                     <TableCell>{b.userId?.firstName} {b.userId?.lastName}</TableCell>
                     <TableCell>{getPrimaryProductName(b)}</TableCell>
-                    <TableCell><Badge variant="secondary">{b.items?.length || 0}</Badge></TableCell>
+                    <TableCell>
+                      <span className="inline-flex items-center justify-center min-w-6 h-6 px-1.5 rounded-full text-xs font-bold bg-slate-100 text-slate-700 border border-slate-200/80 tabular-nums">
+                        {b.items?.length || 0}
+                      </span>
+                    </TableCell>
                     <TableCell className="text-sm text-muted-foreground">{format(new Date(b.createdAt), 'MMM dd, yyyy')}</TableCell>
                     <TableCell><StatusBadge status={b.status} /></TableCell>
                     <TableCell>
