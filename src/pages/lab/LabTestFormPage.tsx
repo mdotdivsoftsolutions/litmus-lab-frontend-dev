@@ -11,6 +11,7 @@ import { ArrowLeft, Beaker, FileText, Plus, Trash2, Library, FlaskConical, Uploa
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { testTypeApi } from "@/lib/api/testType";
+import { categoryApi } from "@/lib/api/category";
 import { labApi } from "@/lib/api/lab";
 import { uploadApi } from "@/lib/api/uploadApi";
 
@@ -41,6 +42,8 @@ export default function LabTestFormPage() {
     discountType: "NONE",
     discountValue: "",
     turnAroundTime: "",
+    applicableCategories: [],
+    applicableSubcategories: [],
     metadata: {
       method: "",
       type: "",
@@ -60,6 +63,13 @@ export default function LabTestFormPage() {
     enabled: creationMode === 'CUSTOM',
   });
 
+  const { data: categoriesData } = useQuery({
+    queryKey: ["categories"],
+    queryFn: () => categoryApi.getCategories(),
+    enabled: creationMode === 'CUSTOM',
+  });
+
+  const categories = categoriesData?.data?.data || categoriesData?.data || [];
   const availablePlatformTests = platformTestsData?.data || [];
 
   const addExistingMutation = useMutation({
@@ -512,9 +522,94 @@ export default function LabTestFormPage() {
                     </div>
                   </div>
 
+                  {/* Category & Subcategory Selection */}
+                  <div className="space-y-4 pt-2 border-t border-border/50">
+                    <div className="space-y-2">
+                      <Label className="text-sm font-medium">Category Applicability (Optional)</Label>
+                      <p className="text-xs text-muted-foreground">Select the product category this custom test applies to:</p>
+                      <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
+                        {categories.map((cat: any) => {
+                          const isCatSelected = (formData.applicableCategories || []).includes(cat._id);
+                          return (
+                            <label
+                              key={cat._id}
+                              className={cn(
+                                "flex items-center gap-2 rounded-lg border p-2.5 cursor-pointer transition-colors text-xs font-medium",
+                                isCatSelected ? "border-primary bg-primary/5 text-primary font-semibold" : "border-border hover:bg-muted/50 text-slate-700"
+                              )}
+                            >
+                              <input
+                                type="checkbox"
+                                className="accent-primary"
+                                checked={isCatSelected}
+                                onChange={(e) => {
+                                  if (e.target.checked) {
+                                    setFormData({ ...formData, applicableCategories: [...(formData.applicableCategories || []), cat._id] });
+                                  } else {
+                                    setFormData({ ...formData, applicableCategories: (formData.applicableCategories || []).filter((id: string) => id !== cat._id) });
+                                  }
+                                }}
+                              />
+                              <span className="truncate">{cat.name}</span>
+                            </label>
+                          );
+                        })}
+                      </div>
+                    </div>
+
+                    {/* Subcategories */}
+                    {formData.applicableCategories.length > 0 && (() => {
+                      const selectedCats = categories.filter((c: any) => (formData.applicableCategories || []).includes(c._id));
+                      const subcategoriesAvailable = selectedCats.flatMap((c: any) =>
+                        (c.subcategories || []).map((s: any) => ({ name: s.name, categoryName: c.name }))
+                      );
+
+                      if (subcategoriesAvailable.length === 0) return null;
+
+                      return (
+                        <div className="space-y-2 p-3.5 rounded-xl border border-slate-200/80 bg-slate-50/70">
+                          <Label className="text-xs font-semibold text-slate-900">Target Subcategories (Optional)</Label>
+                          <div className="flex flex-wrap gap-1.5 pt-1">
+                            {subcategoriesAvailable.map((sub: any, idx: number) => {
+                              const isSubSelected = (formData.applicableSubcategories || []).includes(sub.name);
+                              return (
+                                <button
+                                  key={idx}
+                                  type="button"
+                                  onClick={() => {
+                                    const current = formData.applicableSubcategories || [];
+                                    if (isSubSelected) {
+                                      setFormData({
+                                        ...formData,
+                                        applicableSubcategories: current.filter((s: string) => s !== sub.name)
+                                      });
+                                    } else {
+                                      setFormData({
+                                        ...formData,
+                                        applicableSubcategories: [...current, sub.name]
+                                      });
+                                    }
+                                  }}
+                                  className={cn(
+                                    "px-2 py-0.5 rounded-md text-xs font-medium border transition-all flex items-center gap-1",
+                                    isSubSelected
+                                      ? "bg-primary text-white border-primary"
+                                      : "bg-white text-slate-700 border-slate-200 hover:border-slate-300"
+                                  )}
+                                >
+                                  <span>{sub.name}</span>
+                                </button>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      );
+                    })()}
+                  </div>
+
                   <div className="space-y-2 pt-2">
                     <Label className="text-sm font-medium">Detailed Description</Label>
-                    <Textarea name="description" value={formData.description} onChange={handleChange} placeholder="Describe the testing methodology and purpose..." className="min-h-[120px] bg-background/50" />
+                    <Textarea name="description" value={formData.description} onChange={handleChange} placeholder="Describe the testing methodology and purpose..." className="min-h-[100px] bg-background/50" />
                   </div>
                 </div>
               )}
