@@ -7,7 +7,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { ArrowLeft, Beaker, FileText, Plus, Trash2, Library, FlaskConical, Upload, ImageIcon, Loader2 } from "lucide-react";
+import { ArrowLeft, Beaker, FileText, Plus, Trash2, Library, FlaskConical, Upload, ImageIcon, Loader2, HelpCircle } from "lucide-react";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { testTypeApi } from "@/lib/api/testType";
@@ -489,12 +490,41 @@ export default function LabTestFormPage() {
                       <Input value={formData.metadata.method} onChange={(e) => handleMetadataChange("method", e.target.value)} placeholder="e.g. IS:1479" className="bg-background/50" />
                     </div>
                     <div className="space-y-2">
-                      <Label className="text-sm font-medium">Test Type</Label>
-                      <Select value={formData.metadata.type} onValueChange={(val) => handleMetadataChange("type", val)}>
-                        <SelectTrigger className="bg-background/50"><SelectValue placeholder="Select Type" /></SelectTrigger>
+                      <div className="flex items-center gap-1.5">
+                        <Label className="text-sm font-semibold text-slate-800">Test Classification</Label>
+                        <TooltipProvider>
+                          <Tooltip delayDuration={200}>
+                            <TooltipTrigger asChild>
+                              <button type="button" className="text-muted-foreground hover:text-primary transition-colors cursor-help inline-flex">
+                                <HelpCircle className="h-3.5 w-3.5" />
+                              </button>
+                            </TooltipTrigger>
+                            <TooltipContent side="top" className="max-w-xs text-xs p-3 space-y-1.5 bg-slate-900 text-slate-50 border-slate-800 shadow-xl">
+                              <p className="font-bold text-white">Test Scientific Classification</p>
+                              <p className="text-slate-300 leading-normal">
+                                Categorizes testing methodology into disciplines (e.g. Nutritional, Chemical, Microbiological, Physical).
+                              </p>
+                              <p className="text-emerald-400 font-medium pt-1.5 border-t border-slate-700/80 text-[11px] leading-tight">
+                                Note: Standard platform classifications are configured in Admin Master Catalog.
+                              </p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
+                      </div>
+                      <Select value={formData.metadata.type || undefined} onValueChange={(val) => handleMetadataChange("type", val)}>
+                        <SelectTrigger className="bg-background/50"><SelectValue placeholder="Select Classification" /></SelectTrigger>
                         <SelectContent>
-                          {testTypesData?.data?.map((type: any) => (
-                            <SelectItem key={type._id} value={type.name}>{type.name}</SelectItem>
+                          {Array.from(
+                            new Set([
+                              "Nutritional",
+                              "Chemical",
+                              "Microbiological",
+                              "Physical",
+                              ...(testTypesData?.data?.map((type: any) => type.name) || []),
+                              ...(formData.metadata?.type ? [formData.metadata.type] : []),
+                            ])
+                          ).map((typeOpt) => (
+                            <SelectItem key={typeOpt} value={typeOpt}>{typeOpt}</SelectItem>
                           ))}
                         </SelectContent>
                       </Select>
