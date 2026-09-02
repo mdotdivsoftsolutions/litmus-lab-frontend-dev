@@ -96,6 +96,7 @@ export function SidebarNav({ portal, open, onClose, user, onLogoutClick }: Sideb
         <Button
           variant="ghost"
           size="icon"
+          aria-label={collapsed ? "Expand sidebar navigation" : "Collapse sidebar navigation"}
           className="hidden lg:flex absolute -right-3 top-16 z-50 h-6 w-6 rounded-full border border-slate-200 bg-white text-slate-400 hover:text-slate-900 hover:bg-slate-100 shadow-sm"
           onClick={() => setCollapsed(!collapsed)}
         >
@@ -105,7 +106,7 @@ export function SidebarNav({ portal, open, onClose, user, onLogoutClick }: Sideb
         {/* Logo */}
         <div className="flex h-16 shrink-0 items-center justify-between border-b border-slate-200 px-3.5">
           {!collapsed && (
-            <Link to="/" className="flex flex-col items-start select-none outline-none focus:outline-none">
+            <Link to="/" className="flex flex-col items-start select-none outline-none focus:outline-none" aria-label="Litmus Laboratory Home">
               <img src="/logo.webp" alt="Litmus Logo" className="h-7 w-auto max-w-[130px] object-contain" />
               <div className="leading-none mt-1">
                 <span className="block text-[9px] tracking-wider text-slate-500 font-bold uppercase truncate max-w-[170px]">
@@ -115,17 +116,23 @@ export function SidebarNav({ portal, open, onClose, user, onLogoutClick }: Sideb
             </Link>
           )}
           {collapsed && (
-            <Link to="/" className="mx-auto select-none outline-none focus:outline-none">
+            <Link to="/" className="mx-auto select-none outline-none focus:outline-none" aria-label="Litmus Laboratory Home">
               <img src="/logo.webp" alt="Litmus Logo" className="h-5 w-auto object-contain" />
             </Link>
           )}
-          <Button variant="ghost" size="icon" className="text-slate-500 lg:hidden h-7 w-7" onClick={onClose}>
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            aria-label="Close sidebar navigation"
+            className="text-slate-500 lg:hidden h-7 w-7" 
+            onClick={onClose}
+          >
             <X className="h-4 w-4" />
           </Button>
         </div>
 
         {/* Nav links — contained scroll within sidebar only */}
-        <nav className="flex-1 min-h-0 overflow-y-auto px-2 py-3 space-y-0.5">
+        <nav aria-label="Main sidebar navigation" className="flex-1 min-h-0 overflow-y-auto px-2 py-3 space-y-0.5">
           {navItems.map((item) => {
             const isActive = location.pathname === item.href || 
               (item.href !== "/dashboard" && item.href !== "/admin/dashboard" && item.href !== "/lab/dashboard" && location.pathname.startsWith(item.href));
@@ -136,6 +143,7 @@ export function SidebarNav({ portal, open, onClose, user, onLogoutClick }: Sideb
                 key={item.href}
                 to={item.href}
                 onClick={onClose}
+                aria-current={isActive ? "page" : undefined}
                 title={collapsed ? `${item.label}${badgeCount !== null && badgeCount !== undefined ? ` (${badgeCount})` : ''}` : undefined}
                 className={cn(
                   "flex items-center justify-between rounded-lg px-3 py-2 text-sm font-medium transition-all group select-none outline-none focus:outline-none focus-visible:outline-none focus-visible:ring-0",
@@ -173,6 +181,8 @@ export function SidebarNav({ portal, open, onClose, user, onLogoutClick }: Sideb
                 <button
                   type="button"
                   title={labName}
+                  aria-label="User account details"
+                  aria-expanded={isUserMenuOpen}
                   className="relative h-9 w-9 rounded-lg bg-primary flex items-center justify-center text-primary-foreground text-xs font-bold shadow-xs hover:opacity-90 transition-opacity outline-none focus:outline-none ring-0 border-0"
                 >
                   {getInitials()}
@@ -181,6 +191,8 @@ export function SidebarNav({ portal, open, onClose, user, onLogoutClick }: Sideb
               ) : (
                 <button
                   type="button"
+                  aria-label="User account details"
+                  aria-expanded={isUserMenuOpen}
                   className={cn(
                     "w-full flex items-center justify-between gap-2 p-1.5 rounded-xl border border-slate-200/80 bg-white hover:bg-slate-50 transition-all text-left group shadow-xs outline-none focus:outline-none ring-0",
                     isUserMenuOpen && "bg-slate-50 border-slate-300"
@@ -206,6 +218,7 @@ export function SidebarNav({ portal, open, onClose, user, onLogoutClick }: Sideb
                 </button>
               )}
             </PopoverTrigger>
+
 
             <PopoverContent
               side={collapsed ? "right" : "top"}

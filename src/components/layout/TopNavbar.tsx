@@ -18,12 +18,18 @@ export function TopNavbar({ onMenuClick, user, onLogoutClick, portal }: TopNavba
 
   return (
     <header className="sticky top-0 z-30 flex h-16 items-center gap-4 border-b border-slate-200 bg-white px-4 lg:px-6">
-      <Button variant="ghost" size="icon" className="lg:hidden text-slate-600 hover:bg-slate-100" onClick={onMenuClick}>
+      <Button 
+        variant="ghost" 
+        size="icon" 
+        aria-label="Open navigation sidebar"
+        className="lg:hidden text-slate-600 hover:bg-slate-100" 
+        onClick={onMenuClick}
+      >
         <Menu className="h-5 w-5" />
       </Button>
 
       {/* Breadcrumb */}
-      <nav className="hidden items-center gap-1 text-sm text-muted-foreground md:flex">
+      <nav aria-label="Breadcrumb" className="hidden items-center gap-1 text-sm text-muted-foreground md:flex">
         {pathParts.map((part, i) => (
           <span key={i} className="flex items-center gap-1">
             {i > 0 && <ChevronRight className="h-3.5 w-3.5" />}
@@ -38,7 +44,12 @@ export function TopNavbar({ onMenuClick, user, onLogoutClick, portal }: TopNavba
         {/* Notification bell */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="icon" className="relative hover:bg-transparent">
+            <Button 
+              variant="ghost" 
+              size="icon" 
+              aria-label={`Notifications${unreadCount > 0 ? ` (${unreadCount} unread)` : ''}`}
+              className="relative hover:bg-transparent"
+            >
               <Bell className="h-5 w-5 text-foreground" />
               {unreadCount > 0 && (
                 <span className="absolute -top-0.5 -right-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-[10px] font-bold text-primary-foreground">
@@ -64,5 +75,6 @@ export function TopNavbar({ onMenuClick, user, onLogoutClick, portal }: TopNavba
         </DropdownMenu>
       </div>
     </header>
+
   );
 }
