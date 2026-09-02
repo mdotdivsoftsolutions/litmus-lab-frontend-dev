@@ -69,9 +69,10 @@ export function LoginSection({ className, showLogo = false, defaultRole }: Login
       <CardHeader className="items-center pb-2">
         {showLogo && (
           <Link to="/" className="flex items-center gap-2 mb-6">
-            <img src="/logo.webp" alt="Litmus Logo" className="h-8 w-auto object-contain" />
+            <img src="/logo.webp" alt="Litmus Logo" width={130} height={32} className="h-8 w-auto object-contain" />
           </Link>
         )}
+
         <h2 className="text-xl font-bold text-foreground">Welcome back</h2>
         <p className="text-sm text-muted-foreground">Sign in to your account</p>
         {!defaultRole && (

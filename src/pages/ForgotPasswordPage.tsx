@@ -97,11 +97,12 @@ export default function ForgotPasswordPage() {
           </p>
         </div>
 
-        <div className="relative flex-1 mx-6 mb-6 rounded-2xl overflow-hidden shadow-sm">
-          <img src={loginLabImg} alt="Food testing laboratory" className="absolute inset-0 w-full h-full object-cover" />
+        <div className="relative flex-1 mx-6 mb-6 rounded-2xl overflow-hidden shadow-sm aspect-[4/3] lg:aspect-auto min-h-[300px]">
+          <img src={loginLabImg} alt="Food testing laboratory" width={800} height={600} className="absolute inset-0 w-full h-full object-cover" />
           <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
         </div>
       </div>
+
 
       {/* Right Panel */}
       <div className="flex flex-1 items-center justify-center bg-background px-6">

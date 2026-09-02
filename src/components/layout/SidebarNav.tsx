@@ -107,7 +107,7 @@ export function SidebarNav({ portal, open, onClose, user, onLogoutClick }: Sideb
         <div className="flex h-16 shrink-0 items-center justify-between border-b border-slate-200 px-3.5">
           {!collapsed && (
             <Link to="/" className="flex flex-col items-start select-none outline-none focus:outline-none" aria-label="Litmus Laboratory Home">
-              <img src="/logo.webp" alt="Litmus Logo" className="h-7 w-auto max-w-[130px] object-contain" />
+              <img src="/logo.webp" alt="Litmus Logo" width={130} height={28} className="h-7 w-auto max-w-[130px] object-contain shrink-0" />
               <div className="leading-none mt-1">
                 <span className="block text-[9px] tracking-wider text-slate-500 font-bold uppercase truncate max-w-[170px]">
                   {user?.labId?.labName ? user.labId.labName : "LAB PORTAL"}
@@ -117,9 +117,10 @@ export function SidebarNav({ portal, open, onClose, user, onLogoutClick }: Sideb
           )}
           {collapsed && (
             <Link to="/" className="mx-auto select-none outline-none focus:outline-none" aria-label="Litmus Laboratory Home">
-              <img src="/logo.webp" alt="Litmus Logo" className="h-5 w-auto object-contain" />
+              <img src="/logo.webp" alt="Litmus Logo" width={20} height={20} className="h-5 w-auto object-contain shrink-0" />
             </Link>
           )}
+
           <Button 
             variant="ghost" 
             size="icon" 

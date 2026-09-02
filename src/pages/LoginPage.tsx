@@ -88,7 +88,7 @@ export default function LoginPage({ role = "lab" }: LoginPageProps) {
       <div className="hidden lg:flex lg:w-1/2 flex-col relative overflow-hidden bg-white border-r border-slate-100">
         {/* Top branding */}
         <div className="relative z-10 px-10 pt-8 flex items-center">
-          <img src="/logo.webp" alt="Litmus Food Analytics" className="h-9 w-auto object-contain" />
+          <img src="/logo.webp" alt="Litmus Food Analytics" width={140} height={36} className="h-9 w-auto object-contain" />
         </div>
 
         {/* Headline */}
@@ -104,8 +104,8 @@ export default function LoginPage({ role = "lab" }: LoginPageProps) {
         </div>
 
         {/* Image fills remaining space */}
-        <div className="relative flex-1 mx-6 mb-6 rounded-2xl overflow-hidden shadow-sm">
-          <img src={loginLabImg} alt="Food testing laboratory" className="absolute inset-0 w-full h-full object-cover" />
+        <div className="relative flex-1 mx-6 mb-6 rounded-2xl overflow-hidden shadow-sm aspect-[4/3] lg:aspect-auto min-h-[300px]">
+          <img src={loginLabImg} alt="Food testing laboratory" width={800} height={600} className="absolute inset-0 w-full h-full object-cover" />
           <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
         </div>
       </div>
@@ -116,13 +116,14 @@ export default function LoginPage({ role = "lab" }: LoginPageProps) {
           
           {/* Mobile Logo & Title */}
           <div className="lg:hidden flex flex-col items-center mb-8 w-full text-center">
-            <img src="/logo.webp" alt="Litmus Food Analytics" className="h-9 w-auto object-contain mb-6" />
+            <img src="/logo.webp" alt="Litmus Food Analytics" width={140} height={36} className="h-9 w-auto object-contain mb-6" />
             <h2 className="text-2xl font-light text-slate-800 leading-snug">
               Laboratory Partner Portal
               <br />
               <span className="text-primary font-semibold">Testing & Diagnostics Network</span>
             </h2>
           </div>
+
 
           <div className="w-full max-w-md bg-white p-8 rounded-2xl shadow-xl shadow-slate-200/50 border border-slate-100 space-y-8">
             <div className="text-center">

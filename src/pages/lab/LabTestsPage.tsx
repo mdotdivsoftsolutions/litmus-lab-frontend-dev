@@ -78,8 +78,12 @@ export default function LabTestsPage() {
                         <img
                           src={t.imageUrl || t.icon}
                           alt={t.testName}
+                          width={36}
+                          height={36}
+                          loading="lazy"
                           className="h-9 w-9 rounded-lg object-cover border border-slate-200 shrink-0 bg-slate-50"
                         />
+
                       ) : (
                         <div className="h-9 w-9 rounded-lg bg-primary/10 text-primary flex items-center justify-center border border-primary/20 shrink-0">
                           <Beaker className="h-4 w-4" />

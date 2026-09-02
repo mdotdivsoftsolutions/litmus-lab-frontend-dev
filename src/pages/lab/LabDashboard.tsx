@@ -175,12 +175,12 @@ export default function LabDashboard() {
                 </span>
               </div>
             </CardHeader>
-            <CardContent className="p-4 sm:p-5">
+            <CardContent className="p-4 sm:p-5 min-h-[290px]">
               {isLoading ? (
-                <Skeleton className="h-[250px] w-full rounded-lg" />
+                <Skeleton className="h-[260px] w-full rounded-lg" />
               ) : (
-                <div className="h-[260px] w-full pt-3">
-                  <ResponsiveContainer width="100%" height="100%">
+                <div className="h-[260px] min-h-[260px] w-full pt-3">
+                  <ResponsiveContainer width="100%" height="100%" minHeight={260}>
                     <BarChart data={weeklyData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                       <CartesianGrid strokeDasharray="3 3" stroke="#F1F5F9" vertical={false} />
                       <XAxis 
@@ -198,6 +198,7 @@ export default function LabDashboard() {
                       <Tooltip 
                         formatter={(val: any) => [`${val} Bookings`, "Volume"]}
                         contentStyle={{ background: "#0F172A", border: "none", borderRadius: 8, color: "#fff", fontSize: 12 }} 
+                        wrapperStyle={{ zIndex: 100 }}
                       />
                       <Bar 
                         dataKey="bookings" 
@@ -210,6 +211,7 @@ export default function LabDashboard() {
                 </div>
               )}
             </CardContent>
+
           </Card>
         </div>
 

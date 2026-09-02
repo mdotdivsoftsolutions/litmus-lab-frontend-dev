@@ -211,6 +211,17 @@
 /* nice button color bg-gradient-to-b from-[#3dd9cf] to-[#20b2aa]  */
 
 @layer base {
+  /* Prevent image and media layout shifts globally */
+  img, svg, video {
+    max-width: 100%;
+    height: auto;
+    vertical-align: middle;
+  }
+
+  img[width][height] {
+    aspect-ratio: attr(width) / attr(height);
+  }
+
   /* Custom Scrollbar for the entire project */
   ::-webkit-scrollbar {
     width: 8px;
@@ -227,3 +238,4 @@
     background-color: hsl(var(--muted-foreground) / 0.5);
   }
 }
+

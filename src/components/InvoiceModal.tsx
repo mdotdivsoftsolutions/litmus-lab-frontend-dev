@@ -173,13 +173,16 @@ export function InvoiceModal({ bookingId, open, onOpenChange }: InvoiceModalProp
                   <img
                     src="/logo.png"
                     alt="Litmus Logo"
-                    className="h-12 object-contain"
+                    width={160}
+                    height={48}
+                    className="h-12 w-auto object-contain"
                     onError={(e) => {
                       (e.target as HTMLElement).style.display = "none";
                       const fallback = (e.target as HTMLElement).nextElementSibling;
                       if (fallback) (fallback as HTMLElement).style.display = "block";
                     }}
                   />
+
                   <div style={{ display: "none" }} className="text-right font-sans">
                     <span className="text-2xl font-extrabold text-[#15803d] tracking-tight">litmus</span>
                     <span className="block text-[9px] font-bold text-[#dc2626] uppercase -mt-1">Food Analytics LLP.</span>
@@ -360,7 +363,9 @@ export function InvoiceModal({ bookingId, open, onOpenChange }: InvoiceModalProp
                     <img
                       src="/signature.png"
                       alt="Signature"
-                      className="h-10 object-contain"
+                      width={120}
+                      height={40}
+                      className="h-10 w-auto object-contain"
                       onError={(e) => {
                         (e.target as HTMLElement).style.display = "none";
                       }}
