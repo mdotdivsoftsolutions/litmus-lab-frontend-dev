@@ -601,7 +601,7 @@ export default function LabBookings() {
                     </div>
                   </Card>
 
-                  {/* Ordered Diagnostic Tests & Samples */}
+                  {/* Ordered Food Tests & Samples */}
                   <Card className="bg-white border border-slate-200/80 shadow-2xs rounded-xl overflow-hidden">
                     <div className="p-4 border-b border-slate-100 bg-slate-50/50 flex items-center justify-between">
                       <div className="flex items-center gap-2.5">
@@ -609,7 +609,7 @@ export default function LabBookings() {
                           <Beaker className="h-4 w-4 text-indigo-700" />
                         </div>
                         <div>
-                          <h4 className="text-xs font-bold text-slate-900 uppercase tracking-wider">Ordered Diagnostic Tests & Samples</h4>
+                          <h4 className="text-xs font-bold text-slate-900 uppercase tracking-wider">Ordered Food Tests & Samples</h4>
                           <p className="text-[11px] text-muted-foreground">Testing parameters, matrices, SKUs & sample details</p>
                         </div>
                       </div>
@@ -620,7 +620,7 @@ export default function LabBookings() {
 
                     <div className="p-4 space-y-4">
                       {rawItems.map((item: any, idx: number) => {
-                        const itemTitle = item.packageId?.name || item.testId?.testName || item.testId?.name || "Diagnostic Service Item";
+                        const itemTitle = item.packageId?.name || item.testId?.testName || item.testId?.name || "Food Testing Service Item";
                         return (
                           <div key={idx} className="rounded-lg border border-slate-200 overflow-hidden bg-white shadow-2xs">
                             <div className="bg-slate-50/90 px-3.5 py-2.5 flex justify-between items-center border-b border-slate-200">
@@ -701,7 +701,7 @@ export default function LabBookings() {
                         </div>
                         <div>
                           <h4 className="text-xs font-bold text-slate-900 uppercase tracking-wider">Test Reports & Documents</h4>
-                          <p className="text-[11px] text-muted-foreground">Certified diagnostic certificates and reports</p>
+                          <p className="text-[11px] text-muted-foreground">Certified food testing certificates and reports</p>
                         </div>
                       </div>
                       <Button variant="outline" size="sm" className="h-7 text-xs gap-1 bg-white border-slate-200" asChild>

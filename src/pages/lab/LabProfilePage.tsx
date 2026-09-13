@@ -308,7 +308,7 @@ export default function LabProfilePage() {
                 <Input 
                   id="labName" 
                   name="labName" 
-                  placeholder="e.g. Apex Diagnostics & Research Centre" 
+                  placeholder="e.g. Apex Food Testing & Research Centre" 
                   value={formData.labName || ""} 
                   onChange={handleChange} 
                   disabled={!isEditing}
@@ -328,7 +328,7 @@ export default function LabProfilePage() {
                   <Input 
                     id="address" 
                     name="location.address" 
-                    placeholder="e.g. 142 Medical District, Sector 4" 
+                    placeholder="e.g. 142 Industrial Area, Sector 4" 
                     value={formData.location?.address || ""} 
                     onChange={handleChange} 
                     disabled={!isEditing}
@@ -450,7 +450,7 @@ export default function LabProfilePage() {
                       NABL Accreditation & Standards
                     </CardTitle>
                     <CardDescription className="text-xs text-muted-foreground">
-                      Diagnostic compliance certifications
+                      Food testing compliance certifications
                     </CardDescription>
                   </div>
                 </div>
@@ -608,7 +608,7 @@ export default function LabProfilePage() {
                     Require Admin Report Sign-Off
                   </span>
                   <p className="text-[11px] text-muted-foreground">
-                    Diagnostic reports must be reviewed by Lab Admin before customer release
+                    Food testing reports must be reviewed by Lab Admin before customer release
                   </p>
                 </div>
                 <Badge 

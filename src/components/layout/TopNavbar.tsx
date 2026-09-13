@@ -189,7 +189,7 @@ export function TopNavbar({ onMenuClick, user: _user, onLogoutClick: _onLogoutCl
                   </div>
                   <p className="font-bold text-xs text-slate-800">No new laboratory alerts</p>
                   <p className="text-[11px] text-slate-400 mt-1 max-w-[240px] mx-auto leading-relaxed">
-                    New diagnostic bookings and sample dispatch notices assigned to your lab will appear here.
+                    New food testing bookings and sample dispatch notices assigned to your lab will appear here.
                   </p>
                 </div>
               ) : (

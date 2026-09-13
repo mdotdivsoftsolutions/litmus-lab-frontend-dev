@@ -22,7 +22,7 @@ export default function LabPackagesPage() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-foreground">My Packages</h1>
-          <p className="text-sm text-muted-foreground mt-1">Manage bundled diagnostic test health packages offered by your lab</p>
+          <p className="text-sm text-muted-foreground mt-1">Manage bundled food testing packages offered by your lab</p>
         </div>
         <Button asChild className="gap-2 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold shadow-xs">
           <Link to="/lab/packages/new">

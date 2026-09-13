@@ -96,7 +96,7 @@ export default function LoginPage({ role = "lab" }: LoginPageProps) {
           <h2 className="text-3xl font-light text-slate-800 leading-snug">
             Laboratory Partner Portal
             <br />
-            <span className="text-primary font-semibold">Testing & Diagnostics Network</span>
+            <span className="text-primary font-semibold">Food Testing Network</span>
           </h2>
           <p className="mt-4 text-slate-500 text-sm max-w-sm">
             Enter your credentials to access your laboratory bookings, sample receipts, test catalog, and analytical reporting dashboard.
@@ -120,7 +120,7 @@ export default function LoginPage({ role = "lab" }: LoginPageProps) {
             <h2 className="text-2xl font-light text-slate-800 leading-snug">
               Laboratory Partner Portal
               <br />
-              <span className="text-primary font-semibold">Testing & Diagnostics Network</span>
+              <span className="text-primary font-semibold">Food Testing Network</span>
             </h2>
           </div>
 

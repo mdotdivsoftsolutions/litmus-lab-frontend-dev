@@ -88,7 +88,7 @@ export default function LabDashboard() {
             </span>
           </div>
           <p className="text-xs text-muted-foreground mt-0.5">
-            Monitor incoming sample logistics, diagnostic test execution, certified report uploads, and revenue.
+            Monitor incoming sample logistics, food test execution, certified report uploads, and revenue.
           </p>
         </div>
         <div className="flex items-center gap-2">
@@ -166,7 +166,7 @@ export default function LabDashboard() {
                   <span>Weekly Load Activity</span>
                 </CardTitle>
                 <CardDescription className="text-xs text-muted-foreground mt-0.5">
-                  Assigned diagnostic bookings received across the past 7 days.
+                  Assigned food testing bookings received across the past 7 days.
                 </CardDescription>
               </div>
               <div className="hidden sm:flex items-center gap-2">
@@ -230,7 +230,7 @@ export default function LabDashboard() {
                 </span>
               </div>
               <CardDescription className="text-xs text-muted-foreground mt-0.5">
-                Active tests awaiting certified diagnostic report upload.
+                Active tests awaiting certified food test report upload.
               </CardDescription>
             </CardHeader>
             <CardContent className="p-4 sm:p-5 space-y-2.5">

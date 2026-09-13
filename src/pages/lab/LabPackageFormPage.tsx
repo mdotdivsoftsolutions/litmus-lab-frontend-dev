@@ -249,7 +249,7 @@ export default function LabPackageFormPage() {
               <div className="space-y-4">
                 <div className="space-y-2">
                   <Label htmlFor="name">Package Name <span className="text-destructive">*</span></Label>
-                  <Input id="name" name="name" value={formData.name} onChange={handleChange} placeholder="e.g. Comprehensive Health Check" required className="bg-background/50" />
+                  <Input id="name" name="name" value={formData.name} onChange={handleChange} placeholder="e.g. Comprehensive Food Safety Panel" required className="bg-background/50" />
                 </div>
                 
                 <div className="grid md:grid-cols-2 gap-4">
