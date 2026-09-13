@@ -209,6 +209,9 @@ export function InvoiceModal({ bookingId, open, onOpenChange }: InvoiceModalProp
                   </div>
                   <div className="mb-2">{invoice.customer.address}</div>
                   <div className="mb-1.5">Contact No.: {invoice.customer.phone}</div>
+                  {invoice.customer.gstin && (
+                    <div className="mb-1.5 font-mono">GSTIN: {invoice.customer.gstin}</div>
+                  )}
                   <div>State: {invoice.customer.state}</div>
                 </div>
 
