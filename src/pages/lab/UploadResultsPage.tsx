@@ -9,6 +9,7 @@ import { labApi } from "@/lib/api/lab";
 import { uploadApi } from "@/lib/api/uploadApi";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
+import { bookingDisplayCode } from "@/lib/bookingCode";
 
 export default function UploadResultsPage() {
   const { id } = useParams();
@@ -62,7 +63,7 @@ export default function UploadResultsPage() {
     );
   }
 
-  const displayId = `BKG-${booking._id.substring(booking._id.length - 6).toUpperCase()}`;
+  const displayId = bookingDisplayCode(booking);
   const userName = `${booking.userId?.firstName || ''} ${booking.userId?.lastName || ''}`.trim() || "Unknown User";
   
   // Get product names

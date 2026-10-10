@@ -38,6 +38,7 @@ import { labApi } from "@/lib/api/lab";
 import { toast } from "sonner";
 import { format } from "date-fns";
 import { InvoiceModal } from "@/components/InvoiceModal";
+import { bookingDisplayCode } from "@/lib/bookingCode";
 
 export default function LabBookings() {
   const [selectedBooking, setSelectedBooking] = useState<any | null>(null);
@@ -212,7 +213,7 @@ export default function LabBookings() {
         <SheetContent side="right" className="w-full sm:max-w-xl md:max-w-2xl p-0 flex flex-col h-full bg-slate-50 border-l border-slate-200 shadow-2xl overflow-hidden font-sans">
           {selectedBooking && (() => {
             const b = selectedBooking;
-            const displayId = `#${b._id.substring(b._id.length - 8).toUpperCase()}`;
+            const displayId = bookingDisplayCode(b);
             const isCourierMethod = 
               b.collectionMethod === 'COURIER' ||
               b.metadata?.collectionMethod === 'COURIER' ||
